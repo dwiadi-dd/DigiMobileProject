@@ -1,6 +1,6 @@
 import React from 'react';
 
-type IconName = 'angle-double-left';
+export type IconName = 'angle-double-left';
 
 const IconMap: Record<
   IconName,

@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleProp, StyleSheet, Text, TextStyle, View} from 'react-native';
 
 type TyphographyProps = {
   type: 'heading' | 'paragraph' | 'special';
@@ -11,6 +11,8 @@ type TyphographyProps = {
     | 'small'
     | 'xsmall'
     | 'xxsmall';
+  color?: TextStyle;
+  style?: StyleProp<TextStyle>;
   children: React.ReactNode;
 };
 
@@ -20,7 +22,13 @@ type StyleMap = {
   };
 };
 
-export default function Typhography({size, type, children}: TyphographyProps) {
+export default function Typhography({
+  size,
+  type,
+  color,
+  style,
+  children,
+}: TyphographyProps) {
   const styleMap: StyleMap = {
     heading: {
       xxlarge: styles.headingXXlarge,
@@ -45,7 +53,7 @@ export default function Typhography({size, type, children}: TyphographyProps) {
       xxsmall: styles.specialXxsmall,
     },
   };
-  const textStyle = styleMap[type]?.[size] || null;
+  const textStyle = [styleMap[type]?.[size], color, style];
 
   return (
     <View>

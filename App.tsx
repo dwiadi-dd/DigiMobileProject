@@ -6,10 +6,11 @@
  */
 
 import React from 'react';
-import {SafeAreaView, TextInput, View} from 'react-native';
+import {Alert, SafeAreaView, TextInput, View} from 'react-native';
 import Typhography from './src/components/atom/Typhography';
 import Icon from './src/components/atom/Icon/Icon';
 import colors from './src/constant/colors';
+import Button from './src/components/molecules/Button';
 
 function App(): React.JSX.Element {
   return (
@@ -40,6 +41,50 @@ function App(): React.JSX.Element {
           height={50}
         />
         <TextInput placeholder="Input" style={{borderWidth: 1}} />
+        <Button
+          size="large"
+          type="text-only"
+          variant="primary"
+          disabled={false}>
+          test button
+        </Button>
+        <Button size="small" type="text-only" variant="primary" disabled>
+          test button
+        </Button>
+        <Button
+          size="large"
+          type="text-only"
+          variant="primary"
+          disabled={false}>
+          test button
+        </Button>
+        <Button size="large" type="text-only" variant="primary" disabled>
+          test button
+        </Button>
+        <Button
+          size="large"
+          type="text-only"
+          variant="outline"
+          disabled={false}>
+          test button
+        </Button>
+        <Button
+          size="small"
+          type="icon-right"
+          variant="link"
+          disabled={false}
+          iconName="angle-double-left">
+          test button
+        </Button>
+        <Button
+          size="large"
+          type="icon-left"
+          variant="link"
+          disabled={false}
+          onPress={() => Alert.alert('Button Pressed')}
+          iconName="angle-double-left">
+          test button
+        </Button>
       </View>
     </SafeAreaView>
   );
