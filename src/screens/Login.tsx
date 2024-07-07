@@ -4,13 +4,9 @@ import Typhography from '@components/atom/Typhography';
 import {Button, TextField} from '@components/molecules';
 import COLORS from '@constant/colors';
 
-export default function Login({navigation, route}) {
-  const {name} = route.params;
+export default function Login({navigation}) {
   return (
     <View style={styles.container}>
-      <Typhography type="heading" size="large">
-        {name}
-      </Typhography>
       <TextField label="Email" placeholder="Email" />
       <TextField type="password" label="Password" placeholder="Password" />
       <View style={styles.flex} />
