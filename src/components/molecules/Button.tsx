@@ -55,6 +55,8 @@ const getButtonStyles = (variant: string, disabled: boolean) => {
         backgroundColor: 'transparent',
         borderColor: 'transparent',
         textColor: color,
+        paddingHorizontal: 0,
+        paddingVertical: 0,
       };
     default:
       return baseStyles;

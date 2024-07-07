@@ -40,7 +40,11 @@ function App(): React.JSX.Element {
           component={Onboarding}
           options={{title: 'Welcome'}}
         />
-        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="HomeTab"
           component={HomeTab}

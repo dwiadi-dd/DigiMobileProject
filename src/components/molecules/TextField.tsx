@@ -13,6 +13,8 @@ type TextFieldProps = {
   label?: string;
   placeholder?: string;
   message?: string;
+  onChangeText?: (text: string) => void;
+  value?: string;
 };
 
 export default function TextField({
@@ -22,6 +24,8 @@ export default function TextField({
   label = 'Label',
   message,
   visible = false,
+  value,
+  onChangeText = () => {},
 }: TextFieldProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(visible);
@@ -67,6 +71,8 @@ export default function TextField({
           onFocus={handleFocus}
           onBlur={handleBlur}
           editable={state !== 'disabled'}
+          onChangeText={onChangeText}
+          value={value}
         />
         {type === 'password' && (
           <TouchableOpacity

@@ -1,6 +1,10 @@
 import React from 'react';
 
-export type IconName = 'angle-double-left' | 'eye' | 'eye-slash';
+export type IconName =
+  | 'angle-double-left'
+  | 'eye'
+  | 'eye-slash'
+  | 'chevron-left';
 
 const IconMap: Record<
   IconName,
@@ -9,6 +13,7 @@ const IconMap: Record<
   'angle-double-left': require('./AngleDoubleLeft').default,
   eye: require('./Eye').default,
   'eye-slash': require('./EyeSlash').default,
+  'chevron-left': require('./ChevronLeft').default,
 };
 type IconProps = {
   name: IconName;
