@@ -6,33 +6,26 @@
  */
 
 import React from 'react';
-import {SafeAreaView, View} from 'react-native';
-import Icon from './src/components/atom/Icon/Icon';
-import colors from './src/constant/colors';
-import TextField from './src/components/molecules/TextField';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Onboarding from './src/screens/Onboarding';
+import Login from './src/screens/Login';
+import Home from './src/screens/Home';
 
+const Stack = createNativeStackNavigator();
 function App(): React.JSX.Element {
   return (
-    <SafeAreaView>
-      <View style={{padding: 16}}>
-        <Icon
-          name="angle-double-left"
-          fill={colors.blue600}
-          width={40}
-          height={50}
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen
+          name="OnBoarding"
+          component={Onboarding}
+          options={{title: 'Welcome'}}
         />
-
-        <TextField label="Test" placeholder="place" state="positive" />
-        <TextField
-          label="Test"
-          placeholder="place"
-          state="negative"
-          message="kocak"
-        />
-        <TextField label="Password" placeholder="place" type="password" />
-        <TextField label="Test" placeholder="place" state="disabled" />
-      </View>
-    </SafeAreaView>
+        <Stack.Screen name="Login" component={Login} />
+        <Stack.Screen name="Home" component={Home} />
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 }
 export default App;
