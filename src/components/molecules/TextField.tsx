@@ -1,10 +1,10 @@
 import {StyleSheet, View, TextInput, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 import Icon from '../atom/Icon/Icon';
-import colors from '../../constant/colors';
 import Typhography from '../atom/Typhography';
-import spacing from '../../constant/spacing';
-import fontSize from '../../constant/fontSize';
+import COLORS from '@constant/colors';
+import SPACING from '@constant/spacing';
+import FONT_SIZE from '@constant/fontSize';
 
 type TextFieldProps = {
   state?: 'default' | 'positive' | 'negative' | 'disabled';

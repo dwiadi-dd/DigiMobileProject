@@ -1,8 +1,8 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import Typhography from '@components/atom/Typhography';
 import {Button, TextField} from '@components/molecules';
-import colors from '@constant/colors';
+import COLORS from '@constant/colors';
 
 export default function Login({navigation, route}) {
   const {name} = route.params;

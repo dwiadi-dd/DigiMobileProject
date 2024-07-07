@@ -1,5 +1,5 @@
-import fontSize from '@constant/fontSize';
-import spacing from '@constant/spacing';
+import FONT_SIZE from '@constant/fontSize';
+import SPACING from '@constant/spacing';
 import React from 'react';
 import {StyleProp, StyleSheet, Text, TextStyle, View} from 'react-native';
 

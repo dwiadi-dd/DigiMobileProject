@@ -1,9 +1,9 @@
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import Typhography from '../atom/Typhography';
-import colors from '../../constant/colors';
 import Icon, {IconName} from '../atom/Icon/Icon';
-import spacing from '../../constant/spacing';
+import COLORS from '@constant/colors';
+import SPACING from '@constant/spacing';
 
 type ButtonProps = {
   size: 'small' | 'medium' | 'large';
