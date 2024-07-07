@@ -1,14 +1,10 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  TextInput,
-  TouchableOpacity,
-} from 'react-native';
+import {StyleSheet, View, TextInput, TouchableOpacity} from 'react-native';
 import React, {useState} from 'react';
 import Icon from '../atom/Icon/Icon';
 import colors from '../../constant/colors';
 import Typhography from '../atom/Typhography';
+import spacing from '../../constant/spacing';
+import fontSize from '../../constant/fontSize';
 
 type TextFieldProps = {
   state?: 'default' | 'positive' | 'negative' | 'disabled';
@@ -54,18 +50,18 @@ export default function TextField({
         type="heading"
         size="small"
         style={
-          state === 'disabled' ? {color: colors.neutral400} : styles.label
+          state === 'disabled' ? {color: COLORS.neutral400} : styles.label
         }>
         {label}
       </Typhography>
       <View style={getContainerStyle()}>
         <TextInput
           secureTextEntry={type === 'password' && !isPasswordVisible}
-          placeholderTextColor={colors.neutral500}
+          placeholderTextColor={COLORS.neutral500}
           placeholder={placeholder}
           style={
             state === 'default'
-              ? [styles.inputText, {color: colors.neutral500}]
+              ? [styles.inputText, {color: COLORS.neutral500}]
               : styles.inputText
           }
           onFocus={handleFocus}
@@ -77,7 +73,7 @@ export default function TextField({
             onPress={() => setIsPasswordVisible(!isPasswordVisible)}>
             <Icon
               name={isPasswordVisible ? 'eye-slash' : 'eye'}
-              fill={colors.neutral500}
+              fill={COLORS.neutral500}
               width={16}
               height={16}
             />
@@ -95,42 +91,42 @@ export default function TextField({
 
 const styles = StyleSheet.create({
   message: {
-    color: colors.red500,
+    color: COLORS.red500,
   },
   label: {
-    paddingBottom: 8,
+    paddingBottom: SPACING.sm,
   },
   inputText: {
-    fontSize: 14,
+    fontSize: FONT_SIZE.md,
     fontFamily: 'Inter-Regular',
-    color: colors.neutral700,
+    color: COLORS.neutral700,
   },
   inputTextContainer: {
     borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 16,
+    borderRadius: SPACING.sm,
+    paddingHorizontal: SPACING.lg,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   default: {
-    borderColor: colors.neutral300,
-    backgroundColor: colors.neutral200,
+    borderColor: COLORS.neutral300,
+    backgroundColor: COLORS.neutral200,
   },
   positive: {
-    borderColor: colors.green500,
-    backgroundColor: colors.green100,
+    borderColor: COLORS.green500,
+    backgroundColor: COLORS.green100,
   },
   negative: {
-    borderColor: colors.red500,
-    backgroundColor: colors.red100,
+    borderColor: COLORS.red500,
+    backgroundColor: COLORS.red100,
   },
   disabled: {
-    borderColor: colors.neutral300,
-    backgroundColor: colors.neutral200,
+    borderColor: COLORS.neutral300,
+    backgroundColor: COLORS.neutral200,
   },
   focus: {
-    borderColor: colors.purple500,
-    backgroundColor: colors.purple100,
+    borderColor: COLORS.purple500,
+    backgroundColor: COLORS.purple100,
   },
 });

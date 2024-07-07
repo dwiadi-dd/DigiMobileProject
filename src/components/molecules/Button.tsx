@@ -3,6 +3,7 @@ import React from 'react';
 import Typhography from '../atom/Typhography';
 import colors from '../../constant/colors';
 import Icon, {IconName} from '../atom/Icon/Icon';
+import spacing from '../../constant/spacing';
 
 type ButtonProps = {
   size: 'small' | 'medium' | 'large';
@@ -15,7 +16,7 @@ type ButtonProps = {
 };
 
 const getButtonStyles = (variant: string, disabled: boolean) => {
-  const color = disabled ? colors.neutral400 : colors.purple600;
+  const color = disabled ? COLORS.neutral400 : COLORS.purple600;
   const baseStyles = {
     borderWidth: 1,
     borderColor: 'transparent',
@@ -44,7 +45,7 @@ const getButtonStyles = (variant: string, disabled: boolean) => {
     case 'tertiary':
       return {
         ...baseStyles,
-        backgroundColor: disabled ? colors.neutral400 : colors.purple100,
+        backgroundColor: disabled ? COLORS.neutral400 : COLORS.purple100,
         borderColor: 'transparent',
         textColor: color,
       };
@@ -82,7 +83,7 @@ export default function Button({
       {type === 'icon-left' && !!iconName && (
         <Icon
           name={iconName}
-          fill={disabled ? colors.neutral700 : textColor}
+          fill={disabled ? COLORS.neutral700 : textColor}
           width={iconSize}
           height={iconSize}
         />
@@ -90,14 +91,14 @@ export default function Button({
       <Typhography
         type="heading"
         size={size}
-        color={{color: disabled ? colors.neutral700 : textColor}}
-        style={{paddingHorizontal: 8}}>
+        color={{color: disabled ? COLORS.neutral700 : textColor}}
+        style={{paddingHorizontal: SPACING.sm}}>
         {children}
       </Typhography>
       {type === 'icon-right' && !!iconName && (
         <Icon
           name={iconName}
-          fill={disabled ? colors.neutral700 : textColor}
+          fill={disabled ? COLORS.neutral700 : textColor}
           width={iconSize}
           height={iconSize}
         />
@@ -113,19 +114,19 @@ const iconSizes = {
 
 const styles = StyleSheet.create({
   small: {
-    paddingVertical: 6,
-    paddingHorizontal: 12,
-    borderRadius: 4,
+    paddingVertical: SPACING.xs,
+    paddingHorizontal: SPACING.md,
+    borderRadius: SPACING.xs,
   },
   medium: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 4,
+    paddingVertical: SPACING.sm,
+    paddingHorizontal: SPACING.lg,
+    borderRadius: SPACING.xs,
   },
   large: {
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 4,
+    paddingVertical: SPACING.md,
+    paddingHorizontal: SPACING.xl,
+    borderRadius: SPACING.xs,
   },
   disabled: {
     opacity: 0.6,

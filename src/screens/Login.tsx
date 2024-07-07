@@ -1,24 +1,24 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import TextField from '../components/molecules/TextField';
-import colors from '../constant/colors';
-import Button from '../components/molecules/Button';
+import Typhography from '@components/atom/Typhography';
+import {Button, TextField} from '@components/molecules';
+import colors from '@constant/colors';
 
-export default function Login({navigation}) {
+export default function Login({navigation, route}) {
+  const {name} = route.params;
   return (
-    <View
-      style={{
-        flex: 1,
-        paddingHorizontal: 24,
-        paddingVertical: 44,
-        backgroundColor: colors.neutral100,
-      }}>
+    <View style={styles.container}>
+      <Typhography type="heading" size="large">
+        {name}
+      </Typhography>
       <TextField label="Email" placeholder="Email" />
       <TextField type="password" label="Password" placeholder="Password" />
-      <View style={{flex: 1}} />
+      <View style={styles.flex} />
       <Button
         onPress={() => {
-          navigation.navigate('Home');
+          navigation.navigate('HomeTab', {
+            email: 'adibangkai@gmail.com',
+          });
         }}>
         Masuk
       </Button>
@@ -26,4 +26,12 @@ export default function Login({navigation}) {
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 44,
+    backgroundColor: COLORS.neutral100,
+  },
+  flex: {flex: 1},
+});

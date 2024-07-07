@@ -1,23 +1,29 @@
-import {Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
-import Button from '../components/molecules/Button';
+import {Button} from '@components/molecules';
 
 export default function Onboarding({navigation}) {
   return (
-    <View
-      style={{
-        flex: 1,
-        paddingHorizontal: 20,
-        paddingVertical: 44,
-      }}>
+    <View style={styles.container}>
       <Text>Onboarding</Text>
-      <View style={{flex: 1}} />
+      <View style={styles.flex} />
       <Button
         onPress={() => {
-          navigation.navigate('Login');
+          navigation.navigate('Login', {
+            name: 'adi',
+          });
         }}>
         Get Started
       </Button>
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    paddingHorizontal: 20,
+    paddingVertical: 44,
+  },
+  flex: {flex: 1},
+});

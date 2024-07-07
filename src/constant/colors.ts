@@ -44,7 +44,7 @@ type Colors = Record<
   string
 >;
 
-const colors: Colors = {
+const COLORS: Colors = {
   purple700: '#3737C4',
   purple600: '#4343EF',
   purple500: '#6565F2',
@@ -89,4 +89,4 @@ const colors: Colors = {
   neutral100: '#FFFFFF',
 };
 
-export default colors;
+export default COLORS;
