@@ -2,18 +2,36 @@ import React from 'react';
 
 export type IconName =
   | 'angle-double-left'
+  | 'arrow-up'
+  | 'arrow-down'
+  | 'bell'
+  | 'comment'
   | 'eye'
   | 'eye-slash'
-  | 'chevron-left';
+  | 'ellipsis'
+  | 'home'
+  | 'user'
+  | 'chevron-left'
+  | 'question-mark'
+  | 'plus';
 
 const IconMap: Record<
   IconName,
   React.FC<{width?: number; height?: number; fill?: string}>
 > = {
   'angle-double-left': require('./AngleDoubleLeft').default,
-  eye: require('./Eye').default,
-  'eye-slash': require('./EyeSlash').default,
+  'arrow-up': require('./ArrowDown').default,
+  'arrow-down': require('./ArrowUp').default,
+  bell: require('./Bell').default,
+  comment: require('./Comment').default,
   'chevron-left': require('./ChevronLeft').default,
+  eye: require('./Eye').default,
+  ellipsis: require('./Ellipsis').default,
+  plus: require('./Plus').default,
+  home: require('./User').default,
+  user: require('./Home').default,
+  'eye-slash': require('./EyeSlash').default,
+  'question-mark': require('./QuestionMark').default,
 };
 type IconProps = {
   name: IconName;

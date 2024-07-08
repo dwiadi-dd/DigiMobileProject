@@ -13,7 +13,6 @@ export default function Login({navigation}) {
   const [isValid, setIsValid] = useState(false);
 
   const validateEmail = email => {
-    // Email validation regex
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
       setEmailError('Email is required.');
@@ -67,7 +66,7 @@ export default function Login({navigation}) {
   };
 
   const handleLewati = () => {
-    navigation.navigate('HomePage');
+    navigation.navigate('HomeTab');
   };
 
   const handleEmailChange = text => {

@@ -90,13 +90,23 @@ export default function Button({
           height={iconSize}
         />
       )}
-      <Typhography
-        type="heading"
-        size={size}
-        color={{color: disabled ? COLORS.neutral700 : textColor}}
-        style={{paddingHorizontal: SPACING.sm}}>
-        {children}
-      </Typhography>
+      {type === 'icon-only' && !!iconName ? (
+        <Icon
+          name={iconName}
+          fill={disabled ? COLORS.neutral700 : textColor}
+          width={iconSize}
+          height={iconSize}
+        />
+      ) : (
+        <Typhography
+          type="heading"
+          size={size}
+          color={{color: disabled ? COLORS.neutral700 : textColor}}
+          style={{paddingHorizontal: SPACING.sm}}>
+          {children}
+        </Typhography>
+      )}
+
       {type === 'icon-right' && !!iconName && (
         <Icon
           name={iconName}
