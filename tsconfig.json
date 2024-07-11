@@ -6,7 +6,8 @@
       "@components/*": ["components/*"],
       "@constant/*": ["constant/*"],
       "@screens/*": ["screens/*"],
-      "@utils/*": ["utils/*"]
+      "@utils/*": ["utils/*"],
+      "@contexts/*": ["contexts/*"]
     }
   }
 }

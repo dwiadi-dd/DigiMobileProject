@@ -5,7 +5,7 @@
  * @format
  */
 
-import React, {FC} from 'react';
+import React, {FunctionComponent} from 'react';
 
 import {NavigationContainer} from '@react-navigation/native';
 import {HomeTab} from '@screens/Home/Home';
@@ -13,30 +13,33 @@ import Onboarding from '@screens/Onboarding';
 import Login from '@screens/Login';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {AuthProvider} from '@contexts/AuthContext';
 
 const Stack = createNativeStackNavigator();
 
-const App: FC = () => {
+const App: FunctionComponent = () => {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="HomeTab"
-          component={HomeTab}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="OnBoarding"
-          component={Onboarding}
-          options={{title: 'Welcome', headerShown: false}}
-        />
-        <Stack.Screen
-          name="Login"
-          component={Login}
-          options={{headerShown: false}}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+    <AuthProvider>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="HomeTab"
+            component={HomeTab}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="OnBoarding"
+            component={Onboarding}
+            options={{title: 'Welcome', headerShown: false}}
+          />
+          <Stack.Screen
+            name="Login"
+            component={Login}
+            options={{headerShown: false}}
+          />
+        </Stack.Navigator>
+      </NavigationContainer>
+    </AuthProvider>
   );
 };
 export default App;
