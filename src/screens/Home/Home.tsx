@@ -11,14 +11,22 @@ import {generateDummyPosts} from '@utils/helper';
 
 import Profile from '@screens/Profile';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import useAuthAction from '@utils/hooks/useAuth';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 
 const BottomTab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
 export default function Home() {
+  const navigation = useNavigation<NavigationProp<any>>();
+
   const [data, setData] = useState<any[]>([]);
   useEffect(() => {
     setData(generateDummyPosts());
   }, []);
+
+  const handleCreate = useAuthAction(() => {
+    navigation.navigate('CreatePost');
+  });
   return (
     <View style={styles.flex}>
       <View
@@ -79,6 +87,7 @@ export default function Home() {
             </Typography>
           </TouchableOpacity>
           <TouchableOpacity
+            onPress={handleCreate}
             style={{
               flex: 2,
               width: 'auto',

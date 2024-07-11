@@ -1,16 +1,22 @@
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import {Button, TextField} from '@components/molecules';
 import {Icon, Typography} from '@components/atom';
 
-export default function Login({navigation}) {
+//ts-ignore
+import {NavigationProp} from '@react-navigation/native';
+import {AuthContext} from '@contexts/AuthContext';
+
+export default function Login({navigation}: {navigation: NavigationProp<any>}) {
+  const {login} = useContext(AuthContext);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [passwordError, setPasswordError] = useState('');
   const [isValid, setIsValid] = useState(false);
 
-  const validateEmail = email => {
+  const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!email) {
       setEmailError('Email is required.');
@@ -23,7 +29,7 @@ export default function Login({navigation}) {
     }
   };
 
-  const validatePassword = password => {
+  const validatePassword = (password: string) => {
     const minLength = 8;
     const maxLength = 64;
     const hasUppercase = /[A-Z]/.test(password);
@@ -53,10 +59,11 @@ export default function Login({navigation}) {
 
   const handleLogin = () => {
     if (
-      email.toLowerCase() === 'yourname@test.app' &&
-      password === 'TestApp123!'
+      email.toLowerCase() === 'adibangkit@test.app' &&
+      password === 'AdiBangkit123!'
     ) {
       navigation.navigate('HomeTab');
+      login();
     } else {
       setEmailError('Invalid email or password.');
       setPasswordError('Invalid email or password.');
@@ -67,19 +74,19 @@ export default function Login({navigation}) {
     navigation.navigate('HomeTab');
   };
 
-  const handleEmailChange = text => {
+  const handleEmailChange = (text: string) => {
     const trimmedEmail = text.trim().toLowerCase();
     setEmail(trimmedEmail);
     validateEmail(trimmedEmail);
   };
 
-  const handlePasswordChange = text => {
+  const handlePasswordChange = (text: string) => {
     setPassword(text);
     validatePassword(text);
   };
 
   React.useEffect(() => {
-    setIsValid(!emailError && !passwordError && email && password);
+    setIsValid(Boolean(!emailError && !passwordError && email && password));
   }, [emailError, passwordError, email, password]);
 
   return (
@@ -132,7 +139,12 @@ export default function Login({navigation}) {
           </Button>
         </View>
         <View style={styles.flex} />
-        <Button type="primary" disabled={!isValid} onPress={handleLogin}>
+        <Button
+          type="text-only"
+          variant="primary"
+          size="large"
+          disabled={!isValid}
+          onPress={handleLogin}>
           Login
         </Button>
       </View>
@@ -148,20 +160,20 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: 'row',
-    justifyContent: 'center', // Center the items
+    justifyContent: 'center',
     alignItems: 'center',
     height: 70,
     paddingLeft: 20,
   },
   headerSide: {
-    flex: 1, // Make left and right sides take up equal space
-    justifyContent: 'center', // Center content horizontally for Android compatibility
-    minWidth: 10, // Ensure minimum width to accommodate text
+    flex: 1,
+    justifyContent: 'center',
+    minWidth: 10,
   },
   headerMiddle: {
-    flex: 2.2, // Allow the middle part (image) to take more space
+    flex: 2.2,
     justifyContent: 'center',
-    alignItems: 'center', // Center the image vertically
+    alignItems: 'center',
   },
   helperContainer: {
     justifyContent: 'flex-start',
