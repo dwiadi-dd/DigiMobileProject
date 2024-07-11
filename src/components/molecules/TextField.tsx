@@ -8,7 +8,7 @@ import FONT_SIZE from '@constant/fontSize';
 
 type TextFieldProps = {
   state?: 'default' | 'positive' | 'negative' | 'disabled';
-  type?: 'text' | 'password' | 'email' | 'number';
+  type?: 'text' | 'password' | 'email' | 'number' | 'no-label';
   visible?: boolean;
   label?: string;
   placeholder?: string;
@@ -50,14 +50,17 @@ export default function TextField({
   };
   return (
     <View>
-      <Typhography
-        type="heading"
-        size="small"
-        style={
-          state === 'disabled' ? {color: COLORS.neutral400} : styles.label
-        }>
-        {label}
-      </Typhography>
+      {type !== 'no-label' && (
+        <Typhography
+          type="heading"
+          size="small"
+          style={
+            state === 'disabled' ? {color: COLORS.neutral400} : styles.label
+          }>
+          {label}
+        </Typhography>
+      )}
+
       <View style={getContainerStyle()}>
         <TextInput
           secureTextEntry={type === 'password' && !isPasswordVisible}
@@ -106,6 +109,7 @@ const styles = StyleSheet.create({
     fontSize: FONT_SIZE.md,
     fontFamily: 'Inter-Regular',
     color: COLORS.neutral700,
+    flex: 1,
   },
   inputTextContainer: {
     borderWidth: 1,
