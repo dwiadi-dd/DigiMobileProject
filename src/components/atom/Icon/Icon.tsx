@@ -13,6 +13,7 @@ export type IconName =
   | 'user'
   | 'chevron-left'
   | 'question-mark'
+  | 'retweet'
   | 'plus';
 
 const IconMap: Record<
@@ -29,6 +30,7 @@ const IconMap: Record<
   ellipsis: require('./Ellipsis').default,
   plus: require('./Plus').default,
   home: require('./User').default,
+  retweet: require('./Retweet').default,
   user: require('./Home').default,
   'eye-slash': require('./EyeSlash').default,
   'question-mark': require('./QuestionMark').default,
