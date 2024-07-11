@@ -1,28 +1,33 @@
-import {Dimensions, FlatList, StyleSheet, Text, View} from 'react-native';
+import {Dimensions, FlatList, StyleSheet, View} from 'react-native';
 import React, {useRef, useState} from 'react';
 import {Button} from '@components/molecules';
 import {Image} from 'react-native';
 import {Typography} from '@components/atom';
 import COLORS from '@constant/colors';
 
-const Onboarding = ({navigation}) => {
+import {NavigationProp} from '@react-navigation/native';
+
+const Onboarding = ({navigation}: {navigation: NavigationProp<any>}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const flatListRef = useRef();
+  const flatListRef = useRef<FlatList<any>>(null);
 
   const handleNext = () => {
-    if (currentIndex < onboardingData.length - 1) {
+    if (currentIndex < onboardingData.length - 1 && flatListRef.current) {
       flatListRef.current.scrollToIndex({index: currentIndex + 1});
     } else {
       navigation.navigate('Login');
     }
   };
 
-  const onViewableItemsChanged = useRef(({viewableItems}) => {
-    if (viewableItems.length > 0) {
-      setCurrentIndex(viewableItems[0].index);
-    }
-  }).current;
-  const Indicator = ({currentIndex}) => {
+  const onViewableItemsChanged = useRef(
+    ({viewableItems}: {viewableItems: any[]}) => {
+      if (viewableItems.length > 0) {
+        setCurrentIndex(viewableItems[0].index);
+      }
+    },
+  ).current;
+
+  const Indicator = ({currentIndex}: {currentIndex: number}) => {
     return (
       <View style={styles.indicatorContainer}>
         {onboardingData.map((_, index) => (
@@ -78,6 +83,7 @@ const Onboarding = ({navigation}) => {
     </View>
   );
 };
+
 const {width} = Dimensions.get('window');
 
 export default Onboarding;
@@ -113,6 +119,7 @@ const styles = StyleSheet.create({
   },
   activeIndicator: {
     backgroundColor: COLORS.purple600,
+    width: 20,
   },
   inactiveIndicator: {
     backgroundColor: COLORS.purple200,

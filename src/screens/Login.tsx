@@ -1,8 +1,6 @@
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import React, {useState} from 'react';
-import Typhography from '@components/atom/Typhography';
 import {Button, TextField} from '@components/molecules';
-import COLORS from '@constant/colors';
 import {Icon, Typography} from '@components/atom';
 
 export default function Login({navigation}) {
