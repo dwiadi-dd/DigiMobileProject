@@ -1,6 +1,5 @@
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
-import Button from './Button';
 import COLORS from '@constant/colors';
 import {Icon} from '@components/atom';
 
