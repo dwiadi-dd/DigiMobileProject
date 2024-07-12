@@ -60,7 +60,7 @@ export default function Login({navigation}: {navigation: NavigationProp<any>}) {
   const handleLogin = () => {
     if (
       email.toLowerCase() === 'adibangkit@test.app' &&
-      password === 'AdiBangkit123!'
+      password === 'Kocak123!'
     ) {
       navigation.navigate('HomeTab');
       login();
@@ -142,7 +142,7 @@ export default function Login({navigation}: {navigation: NavigationProp<any>}) {
         <Button
           type="text-only"
           variant="primary"
-          size="large"
+          size="small"
           disabled={!isValid}
           onPress={handleLogin}>
           Login

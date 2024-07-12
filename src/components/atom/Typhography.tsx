@@ -64,6 +64,38 @@ export default function Typhography({
   );
 }
 
+export function getTypography(
+  type: TyphographyProps['type'],
+  size: TyphographyProps['size'],
+): TextStyle {
+  const styleMap: StyleMap = {
+    heading: {
+      xxlarge: styles.headingXXlarge,
+      xlarge: styles.headingXlarge,
+      large: styles.headingLarge,
+      medium: styles.headingMedium,
+      small: styles.headingSmall,
+      xsmall: styles.headingXsmall,
+      xxsmall: styles.headingXxsmall,
+    },
+    paragraph: {
+      large: styles.paragraphLarge,
+      medium: styles.paragraphMedium,
+      small: styles.paragraphSmall,
+      xsmall: styles.paragraphXsmall,
+    },
+    special: {
+      large: styles.specialLarge,
+      medium: styles.specialMedium,
+      small: styles.specialSmall,
+      xsmall: styles.specialXsmall,
+      xxsmall: styles.specialXxsmall,
+    },
+  };
+
+  return styleMap[type]?.[size] || {};
+}
+
 const styles = StyleSheet.create({
   headingXXlarge: {
     fontSize: FONT_SIZE.xxxl,

@@ -14,6 +14,8 @@ import Login from '@screens/Login';
 
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {AuthProvider} from '@contexts/AuthContext';
+import CreatePost from '@screens/CreatePost';
+import DetailPost from '@screens/DetailPost';
 
 const Stack = createNativeStackNavigator();
 
@@ -22,6 +24,8 @@ const App: FunctionComponent = () => {
     <AuthProvider>
       <NavigationContainer>
         <Stack.Navigator>
+          <Stack.Screen name="Post" component={DetailPost} />
+
           <Stack.Screen
             name="HomeTab"
             component={HomeTab}
@@ -35,6 +39,11 @@ const App: FunctionComponent = () => {
           <Stack.Screen
             name="Login"
             component={Login}
+            options={{headerShown: false}}
+          />
+          <Stack.Screen
+            name="Create Post"
+            component={CreatePost}
             options={{headerShown: false}}
           />
         </Stack.Navigator>

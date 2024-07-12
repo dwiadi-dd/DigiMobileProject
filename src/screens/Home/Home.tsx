@@ -1,5 +1,5 @@
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import React, {useContext, useEffect, useState} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import Trending from './trending/Trending';
 import News from './news/News';
@@ -11,22 +11,28 @@ import {generateDummyPosts} from '@utils/helper';
 
 import Profile from '@screens/Profile';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import useAuthAction from '@utils/hooks/useAuth';
+import useAuth from '@utils/hooks/useAuth';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {AuthContext} from '@contexts/AuthContext';
+import Avatar from '@components/atom/Avatar';
 
 const BottomTab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
 export default function Home() {
+  const {isAuthenticated} = useContext(AuthContext);
   const navigation = useNavigation<NavigationProp<any>>();
-
+  const userAvatar = isAuthenticated
+    ? 'https://lwfiles.mycourse.app/656ef73b8e59fa6dfcddbe98-public/3073ed5d42a0e38174e311a1a0cb0800.png'
+    : '../../../assets/images/avatar.png';
   const [data, setData] = useState<any[]>([]);
   useEffect(() => {
     setData(generateDummyPosts());
   }, []);
 
-  const handleCreate = useAuthAction(() => {
-    navigation.navigate('CreatePost');
+  const handleCreate = useAuth(() => {
+    navigation.navigate('Create Post');
   });
+
   return (
     <View style={styles.flex}>
       <View
@@ -47,10 +53,7 @@ export default function Home() {
             alignItems: 'center',
             gap: 12,
           }}>
-          <Image
-            source={require('../../../assets/img/Avatar.png')}
-            style={{width: 40, height: 40}}
-          />
+          <Avatar image={userAvatar} size="large" />
           <View style={{flex: 2, width: 'auto'}}>
             <TextField placeholder="What`s on your mind?" type="no-label" />
           </View>

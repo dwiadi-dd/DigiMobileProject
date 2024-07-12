@@ -1,11 +1,4 @@
-import {
-  Dimensions,
-  Image,
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
 import React from 'react';
 import {Typography} from '@components/atom';
 import COLORS from '@constant/colors';
@@ -25,7 +18,6 @@ export default function Profile() {
     </SafeAreaView>
   );
 }
-const {width} = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {

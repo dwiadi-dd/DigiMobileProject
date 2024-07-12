@@ -7,11 +7,29 @@ import {Icon, Typography} from '@components/atom';
 import Label from './Label';
 import COLORS from '@constant/colors';
 import {formatTimeAgo} from '@utils/helper';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import useAuth from '@utils/hooks/useAuth';
 
-function PostItem({post}: {post: any}) {
-  handleDetailPost = () => {
-    navigation.navigate('DetailPost');
-  };
+export type PostItemProps = {
+  avatar_url: string;
+  name: string;
+  headline: string;
+  created_at: string;
+  post_header: string;
+  post_content: string;
+  post_topic: string;
+  post_upvote: number;
+  post_downvote: number;
+  post_comment: number;
+  post_retweet: number;
+};
+
+export const PostItem = ({post}: {post: PostItemProps}) => {
+  const navigation = useNavigation<NavigationProp<any>>();
+
+  const handleDetail = useAuth(() => {
+    navigation.navigate('Detail Post');
+  });
   return (
     <View style={styles.postContainer}>
       <View style={{flexDirection: 'row', alignItems: 'center', gap: 12}}>
@@ -33,12 +51,16 @@ function PostItem({post}: {post: any}) {
       </View>
 
       <View style={styles.contentContainer}>
-        <Typhography type="heading" size="medium">
-          {post?.post_header}
-        </Typhography>
-        <Typhography type="paragraph" size="medium">
-          {post?.post_content}
-        </Typhography>
+        <TouchableOpacity onPress={handleDetail}>
+          <Typhography type="heading" size="medium">
+            {post?.post_header}
+          </Typhography>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={handleDetail}>
+          <Typhography type="paragraph" size="medium">
+            {post?.post_content}
+          </Typhography>
+        </TouchableOpacity>
       </View>
       <Label color="green" variant="tertiary">
         Promo
@@ -95,7 +117,7 @@ function PostItem({post}: {post: any}) {
       </View>
     </View>
   );
-}
+};
 
 export default memo(PostItem);
 
