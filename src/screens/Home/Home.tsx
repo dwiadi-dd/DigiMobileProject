@@ -35,50 +35,15 @@ export default function Home() {
 
   return (
     <View style={styles.flex}>
-      <View
-        style={{
-          backgroundColor: COLORS.neutral100,
-          borderRadius: 16,
-          borderColor: COLORS.neutral300,
-          borderWidth: 1,
-          marginVertical: 14,
-          marginHorizontal: 14,
-        }}>
-        <View
-          style={{
-            flexDirection: 'row',
-            width: 'auto',
-            paddingVertical: 13,
-            paddingHorizontal: 24,
-            alignItems: 'center',
-            gap: 12,
-          }}>
+      <View style={styles.homeHeaderContainer}>
+        <View style={styles.postSection}>
           <Avatar image={userAvatar} size="large" />
-          <View style={{flex: 2, width: 'auto'}}>
+          <View style={styles.postField}>
             <TextField placeholder="What`s on your mind?" type="no-label" />
           </View>
         </View>
-        <View
-          style={{
-            flexDirection: 'row',
-            width: 'auto',
-            paddingVertical: 13,
-            paddingHorizontal: 24,
-            alignItems: 'center',
-            gap: 12,
-            marginLeft: 10,
-            justifyContent: 'space-between',
-          }}>
-          <TouchableOpacity
-            style={{
-              flex: 2,
-              width: 'auto',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-
-              gap: 4,
-            }}>
+        <View style={styles.buttonSection}>
+          <TouchableOpacity style={styles.headButton} onPress={handleCreate}>
             <Icon
               name="question-mark"
               fill={COLORS.yellow500}
@@ -89,16 +54,7 @@ export default function Home() {
               Pertanyaan
             </Typography>
           </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleCreate}
-            style={{
-              flex: 2,
-              width: 'auto',
-              flexDirection: 'row',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: 4,
-            }}>
+          <TouchableOpacity onPress={handleCreate} style={styles.headButton}>
             <Icon name="plus" fill={COLORS.green500} width={16} height={16} />
             <Typography size="xsmall" type="heading">
               Post
@@ -188,4 +144,39 @@ export const HomeTab = () => {
 
 const styles = StyleSheet.create({
   flex: {flex: 1},
+  homeHeaderContainer: {
+    backgroundColor: COLORS.neutral100,
+    borderRadius: 16,
+    borderColor: COLORS.neutral300,
+    borderWidth: 1,
+    marginVertical: 14,
+    marginHorizontal: 14,
+  },
+  postSection: {
+    flexDirection: 'row',
+    width: 'auto',
+    paddingVertical: 13,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    gap: 12,
+  },
+  postField: {flex: 2, width: 'auto'},
+  buttonSection: {
+    flexDirection: 'row',
+    width: 'auto',
+    paddingVertical: 13,
+    paddingHorizontal: 24,
+    alignItems: 'center',
+    gap: 12,
+    marginLeft: 10,
+    justifyContent: 'space-between',
+  },
+  headButton: {
+    flex: 2,
+    width: 'auto',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
+  },
 });
