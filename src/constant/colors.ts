@@ -80,7 +80,7 @@ const COLORS: Colors = {
   red300: '#F8A9C3',
   red200: '#FBCADA',
   red100: '#FDECF2',
-  neutral700: '#383842',
+  neutral700: '#000000',
   neutral600: '#68686F',
   neutral500: '#919196',
   neutral400: '#BABABD',

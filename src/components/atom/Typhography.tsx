@@ -1,3 +1,4 @@
+import COLORS from '@constant/colors';
 import FONT_SIZE from '@constant/fontSize';
 import SPACING from '@constant/spacing';
 import React from 'react';
@@ -27,7 +28,7 @@ type StyleMap = {
 export default function Typhography({
   size,
   type,
-  color,
+  color = {color: COLORS.neutral700},
   style,
   children,
 }: TyphographyProps) {

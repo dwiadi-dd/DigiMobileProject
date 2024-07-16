@@ -1,84 +1,41 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React, {memo} from 'react';
 import SPACING from '@constant/spacing';
-import Typhography from '@components/atom/Typhography';
-import Avatar from '@components/atom/Avatar';
-import {Icon, Typography} from '@components/atom';
-import Label from './Label';
+import {Icon} from '@components/atom';
 import COLORS from '@constant/colors';
-import {formatTimeAgo} from '@utils/helper';
-import {NavigationProp, useNavigation} from '@react-navigation/native';
-import useAuth from '@utils/hooks/useAuth';
 
-export type PostItemProps = {
-  avatar_url: string;
-  name: string;
-  headline: string;
-  created_at: string;
-  post_header: string;
-  post_content: string;
-  post_topic: string;
-  post_upvote: number;
-  post_downvote: number;
-  post_comment: number;
-  post_retweet: number;
-};
-
-export const PostItem = ({post}: {post: PostItemProps}) => {
-  const navigation = useNavigation<NavigationProp<any>>();
-
-  const handleDetail = useAuth(() => {
-    navigation.navigate('Detail Post');
-  });
+export const PostItem = () => {
   return (
     <View style={styles.postContainer}>
-      <View style={{flexDirection: 'row', alignItems: 'center', gap: 12}}>
-        <Avatar image={post?.avatar_url} size="large" />
+      {/* Skeleton for avatar */}
+      <View style={styles.headContainer}>
+        <View style={[styles.imageSize, styles.skeletonAvatar]} />
         <View>
           <View style={styles.header}>
-            <Typography type="heading" size="medium">
-              {post?.name}
-            </Typography>
+            <View style={[styles.skeletonText, {width: 100}]} />
             <Icon name="ellipsis" width={14} height={14} />
           </View>
-          <Typography type="paragraph" size="medium">
-            {post?.headline}
-          </Typography>
-          <Typography type="paragraph" size="small">
-            {formatTimeAgo(new Date(post?.created_at))}
-          </Typography>
+          <View style={styles.skeletonText} />
+          <View style={styles.skeletonText} />
         </View>
       </View>
 
+      {/* Skeleton for content */}
       <View style={styles.contentContainer}>
-        <TouchableOpacity onPress={handleDetail}>
-          <Typhography type="heading" size="medium">
-            {post?.post_header}
-          </Typhography>
+        <TouchableOpacity>
+          <View style={styles.skeletonText} />
         </TouchableOpacity>
-        <TouchableOpacity onPress={handleDetail}>
-          <Typhography type="paragraph" size="medium">
-            {post?.post_content}
-          </Typhography>
+        <TouchableOpacity>
+          <View style={styles.skeletonText} />
         </TouchableOpacity>
       </View>
-      <Label color="green" variant="tertiary">
-        Promo
-      </Label>
+
+      {/* Skeleton for label */}
+      <View style={styles.skeletonLabel} />
+
+      {/* Skeleton for footer */}
       <View style={styles.footer}>
         <View style={styles.voteContainer}>
-          <TouchableOpacity style={styles.voteButton}>
-            <Icon
-              width={16}
-              height={16}
-              name="arrow-up"
-              fill={COLORS.neutral700}
-            />
-            <Typhography type="paragraph" size="small">
-              {post?.post_upvote}
-            </Typhography>
-          </TouchableOpacity>
-          <View style={styles.divider}></View>
           <TouchableOpacity style={styles.voteButton}>
             <Icon
               width={16}
@@ -86,12 +43,18 @@ export const PostItem = ({post}: {post: PostItemProps}) => {
               name="arrow-down"
               fill={COLORS.neutral700}
             />
-            <Typhography type="paragraph" size="small">
-              {post?.post_downvote}
-            </Typhography>
+            <View style={styles.skeletonText} />
+          </TouchableOpacity>
+          <View style={styles.divider} />
+          <TouchableOpacity style={styles.voteButton}>
+            <Icon
+              width={16}
+              height={16}
+              name="arrow-up"
+              fill={COLORS.neutral700}
+            />
           </TouchableOpacity>
         </View>
-
         <TouchableOpacity style={styles.footerButton}>
           <Icon
             width={16}
@@ -99,9 +62,7 @@ export const PostItem = ({post}: {post: PostItemProps}) => {
             name="comment"
             fill={COLORS.neutral700}
           />
-          <Typhography type="paragraph" size="small">
-            {post?.post_comment}
-          </Typhography>
+          <View style={styles.skeletonText} />
         </TouchableOpacity>
         <TouchableOpacity style={styles.footerButton}>
           <Icon
@@ -110,9 +71,7 @@ export const PostItem = ({post}: {post: PostItemProps}) => {
             name="retweet"
             fill={COLORS.neutral700}
           />
-          <Typhography type="paragraph" size="small">
-            {post?.post_retweet}
-          </Typhography>
+          <View style={styles.skeletonText} />
         </TouchableOpacity>
       </View>
     </View>
@@ -130,6 +89,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
+  headContainer: {flexDirection: 'row', alignItems: 'center', gap: 12},
   flex: {flex: 1},
   imageSize: {
     width: 50,
@@ -184,5 +144,20 @@ const styles = StyleSheet.create({
     height: 20,
     width: 1,
     backgroundColor: '#ddd',
+  },
+  skeletonAvatar: {
+    backgroundColor: '#ddd',
+  },
+  skeletonText: {
+    backgroundColor: '#ddd',
+    height: 16,
+    marginBottom: 8,
+  },
+  skeletonLabel: {
+    backgroundColor: '#ddd',
+    width: 60,
+    height: 20,
+    borderRadius: 4,
+    marginBottom: 8,
   },
 });

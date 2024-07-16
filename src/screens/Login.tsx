@@ -1,13 +1,19 @@
-import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {useContext, useState} from 'react';
+import {
+  Image,
+  SafeAreaView,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import React, {FC, useContext, useEffect, useState} from 'react';
 import {Button, TextField} from '@components/molecules';
 import {Icon, Typography} from '@components/atom';
-
-//ts-ignore
 import {NavigationProp} from '@react-navigation/native';
 import {AuthContext} from '@contexts/AuthContext';
+import SPACING from '@constant/spacing';
+import COLORS from '@constant/colors';
 
-export default function Login({navigation}: {navigation: NavigationProp<any>}) {
+const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const {login} = useContext(AuthContext);
 
   const [email, setEmail] = useState('');
@@ -16,30 +22,30 @@ export default function Login({navigation}: {navigation: NavigationProp<any>}) {
   const [passwordError, setPasswordError] = useState('');
   const [isValid, setIsValid] = useState(false);
 
-  const validateEmail = (email: string) => {
+  const validateEmail = (input: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) {
+    if (!input) {
       setEmailError('Email is required.');
-    } else if (email.length > 254) {
+    } else if (input.length > 254) {
       setEmailError('Email should not exceed 254 characters.');
-    } else if (!emailRegex.test(email)) {
+    } else if (!emailRegex.test(input)) {
       setEmailError('Please enter a valid email address.');
     } else {
       setEmailError('');
     }
   };
 
-  const validatePassword = (password: string) => {
+  const validatePassword = (input: string) => {
     const minLength = 8;
     const maxLength = 64;
-    const hasUppercase = /[A-Z]/.test(password);
-    const hasLowercase = /[a-z]/.test(password);
-    const hasNumber = /[0-9]/.test(password);
-    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+    const hasUppercase = /[A-Z]/.test(input);
+    const hasLowercase = /[a-z]/.test(input);
+    const hasNumber = /[0-9]/.test(input);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(input);
 
-    if (!password) {
+    if (!input) {
       setPasswordError('Password is required.');
-    } else if (password.length < minLength || password.length > maxLength) {
+    } else if (input.length < minLength || input.length > maxLength) {
       setPasswordError(
         `Password must be between ${minLength} and ${maxLength} characters.`,
       );
@@ -85,12 +91,12 @@ export default function Login({navigation}: {navigation: NavigationProp<any>}) {
     validatePassword(text);
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     setIsValid(Boolean(!emailError && !passwordError && email && password));
   }, [emailError, passwordError, email, password]);
 
   return (
-    <>
+    <SafeAreaView style={styles.viewContainer}>
       <View style={styles.headerContainer}>
         <View style={styles.headerSide}>
           <TouchableOpacity>
@@ -105,65 +111,76 @@ export default function Login({navigation}: {navigation: NavigationProp<any>}) {
             type="text-only"
             variant="link"
             size="medium"
-            disabled={false}
             onPress={handleLewati}>
             Lewati
           </Button>
         </View>
       </View>
       <View style={styles.container}>
-        <Typography size="large" type="heading" style={{textAlign: 'center'}}>
+        <Typography size="large" type="heading" style={styles.centerText}>
           Masuk Ke Investly
         </Typography>
-        <TextField
-          label="Email"
-          placeholder="Email"
-          state={emailError ? 'negative' : 'default'}
-          message={emailError}
-          onChangeText={handleEmailChange}
-          value={email}
-        />
-
-        <TextField
-          type="password"
-          label="Password"
-          placeholder="Password"
-          state={passwordError ? 'negative' : 'default'}
-          message={passwordError}
-          onChangeText={handlePasswordChange}
-          value={password}
-        />
-        <View style={styles.helperContainer}>
-          <Button type="text-only" variant="link" size="small" disabled={false}>
-            Lupa Password
-          </Button>
+        <View style={styles.formContainer}>
+          <TextField
+            label="Email"
+            placeholder="Email"
+            state={emailError ? 'negative' : 'default'}
+            message={emailError}
+            onChangeText={handleEmailChange}
+            value={email}
+          />
+          <TextField
+            type="password"
+            label="Password"
+            placeholder="Password"
+            state={passwordError ? 'negative' : 'default'}
+            message={passwordError}
+            onChangeText={handlePasswordChange}
+            value={password}
+          />
+          <View style={styles.helperContainer}>
+            <Button type="text-only" variant="link" size="small">
+              Lupa Password
+            </Button>
+          </View>
         </View>
+
         <View style={styles.flex} />
         <Button
           type="text-only"
           variant="primary"
-          size="small"
+          size="medium"
           disabled={!isValid}
           onPress={handleLogin}>
           Login
         </Button>
       </View>
-    </>
+    </SafeAreaView>
   );
-}
+};
+
+export default Login;
+
 const styles = StyleSheet.create({
+  viewContainer: {backgroundColor: COLORS.neutral100, flex: 1},
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 44,
+    paddingHorizontal: SPACING.xl,
+    paddingVertical: SPACING.xl7,
     justifyContent: 'flex-start',
+    gap: SPACING.sm,
+  },
+  formContainer: {
+    flex: 1,
+    gap: SPACING.xl,
+    marginTop: SPACING.xl,
   },
   headerContainer: {
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
     height: 70,
-    paddingLeft: 20,
+    paddingLeft: SPACING.xl,
   },
   headerSide: {
     flex: 1,
@@ -171,14 +188,16 @@ const styles = StyleSheet.create({
     minWidth: 10,
   },
   headerMiddle: {
-    flex: 2.2,
+    flex: 2.5,
     justifyContent: 'center',
+    marginLeft: -20,
     alignItems: 'center',
   },
   helperContainer: {
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    marginTop: 4,
+    marginTop: SPACING.xs,
   },
   flex: {flex: 1},
+  centerText: {textAlign: 'center'},
 });

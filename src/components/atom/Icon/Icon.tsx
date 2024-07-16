@@ -14,6 +14,9 @@ export type IconName =
   | 'chevron-left'
   | 'question-mark'
   | 'retweet'
+  | 'paper-clip'
+  | 'paper-plane'
+  | 'image-regular'
   | 'plus';
 
 const IconMap: Record<
@@ -29,9 +32,12 @@ const IconMap: Record<
   eye: require('./Eye').default,
   ellipsis: require('./Ellipsis').default,
   plus: require('./Plus').default,
-  home: require('./User').default,
+  home: require('./Home').default,
   retweet: require('./Retweet').default,
-  user: require('./Home').default,
+  user: require('./User').default,
+  'paper-clip': require('./PaperClip').default,
+  'paper-plane': require('./PaperPlane').default,
+  'image-regular': require('./ImageRegular').default,
   'eye-slash': require('./EyeSlash').default,
   'question-mark': require('./QuestionMark').default,
 };

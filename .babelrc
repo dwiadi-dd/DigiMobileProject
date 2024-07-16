@@ -9,7 +9,9 @@
           "@constant": "./src/constant",
           "@screens": "./src/screens",
           "@utils": "./src/utils",
-          "@contexts": "./src/contexts"
+          "@contexts": "./src/contexts",
+          "@hooks": "./src/hooks",
+          "@navigations": "./src/navigations"
         }
       }
     ]

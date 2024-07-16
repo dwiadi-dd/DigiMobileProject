@@ -1,11 +1,32 @@
-import {Dimensions, FlatList, StyleSheet, View} from 'react-native';
-import React, {useRef, useState} from 'react';
-import {Button} from '@components/molecules';
-import {Image} from 'react-native';
-import {Typography} from '@components/atom';
-import COLORS from '@constant/colors';
+import {FlatList, StyleSheet, View, Image} from 'react-native';
+import React, {FC, useRef, useState} from 'react';
 
 import {NavigationProp} from '@react-navigation/native';
+import COLORS from '@constant/colors';
+import {Button} from '@components/molecules';
+import {Typography} from '@components/atom';
+import {onboardingData} from '@constant/onBoardingData';
+import {screenWidth} from '@constant/globalSize';
+import SPACING from '@constant/spacing';
+import {IndicatorProps} from '@utils/props';
+
+const Indicator: FC<IndicatorProps> = ({currentIndex}) => {
+  return (
+    <View style={styles.indicatorContainer}>
+      {onboardingData.map((_, index) => (
+        <View
+          key={index}
+          style={[
+            styles.indicator,
+            index === currentIndex
+              ? styles.activeIndicator
+              : styles.inactiveIndicator,
+          ]}
+        />
+      ))}
+    </View>
+  );
+};
 
 const Onboarding = ({navigation}: {navigation: NavigationProp<any>}) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -27,23 +48,6 @@ const Onboarding = ({navigation}: {navigation: NavigationProp<any>}) => {
     },
   ).current;
 
-  const Indicator = ({currentIndex}: {currentIndex: number}) => {
-    return (
-      <View style={styles.indicatorContainer}>
-        {onboardingData.map((_, index) => (
-          <View
-            key={index}
-            style={[
-              styles.indicator,
-              index === currentIndex
-                ? styles.activeIndicator
-                : styles.inactiveIndicator,
-            ]}
-          />
-        ))}
-      </View>
-    );
-  };
   return (
     <View style={styles.container}>
       <FlatList
@@ -57,49 +61,50 @@ const Onboarding = ({navigation}: {navigation: NavigationProp<any>}) => {
         renderItem={({item}) => (
           <View style={styles.itemContainer}>
             <Image source={item.image} style={styles.image} />
-            <Typography type="heading" size="xlarge">
-              {item.title}
-            </Typography>
-            <Typography
-              type="paragraph"
-              size="medium"
-              style={{textAlign: 'center'}}>
-              {item.description}
-            </Typography>
+            <View style={styles.textContainer}>
+              <Typography type="heading" size="xlarge">
+                {item.title}
+              </Typography>
+              <Typography
+                type="paragraph"
+                size="medium"
+                style={styles.centerText}>
+                {item.description}
+              </Typography>
+            </View>
           </View>
         )}
         keyExtractor={item => item.key}
       />
       <Indicator currentIndex={currentIndex} />
-
-      <Button
-        onPress={handleNext}
-        disabled={false}
-        type="text-only"
-        variant="primary"
-        size="medium">
-        {currentIndex === onboardingData.length - 1 ? 'Get Started' : 'Next'}
-      </Button>
+      <View style={styles.buttonContainer}>
+        <Button
+          onPress={handleNext}
+          type="text-only"
+          variant="primary"
+          size="medium">
+          {currentIndex === onboardingData.length - 1 ? 'Get Started' : 'Next'}
+        </Button>
+      </View>
     </View>
   );
 };
 
-const {width} = Dimensions.get('window');
-
 export default Onboarding;
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 44,
+    paddingVertical: SPACING.xl7,
     justifyContent: 'center',
+    backgroundColor: COLORS.neutral100,
   },
   flex: {flex: 1},
   itemContainer: {
-    width: width - 40,
+    width: screenWidth,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20,
+    padding: SPACING.xl,
   },
   image: {
     width: 240,
@@ -112,40 +117,26 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   indicator: {
-    height: 8,
-    width: 8,
-    borderRadius: 4,
-    marginHorizontal: 4,
+    height: SPACING.sm,
+    width: SPACING.sm,
+    marginHorizontal: SPACING.xs,
+    borderRadius: SPACING.xs,
   },
   activeIndicator: {
     backgroundColor: COLORS.purple600,
-    width: 20,
+    width: SPACING.xl,
+    borderRadius: SPACING.xs,
+  },
+  textContainer: {
+    paddingHorizontal: SPACING.xl,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  buttonContainer: {
+    paddingHorizontal: SPACING.xl,
   },
   inactiveIndicator: {
     backgroundColor: COLORS.purple200,
   },
+  centerText: {textAlign: 'center'},
 });
-
-const onboardingData = [
-  {
-    key: '1',
-    title: 'Connect',
-    description:
-      'Dapatkan akses ke investor profesional terpercaya dan mulai investasi bareng teman dan komunitas',
-    image: require('../../assets/img/connect.png'),
-  },
-  {
-    key: '2',
-    title: 'Learn',
-    description:
-      'Dapatkan ide investasi dan informasi terpercaya langsung dari ahlinya biar kamu makin jago dan makin cuan!',
-    image: require('../../assets/img/learn.png'),
-  },
-  {
-    key: '3',
-    title: 'Invest',
-    description:
-      'Atur portfolio kamu dan langsung berinvestasi dengan mudah dengan beragam pilihan aset',
-    image: require('../../assets/img/invest.png'),
-  },
-];

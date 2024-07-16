@@ -1,9 +1,10 @@
 import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, {FC, memo} from 'react';
 import {Typography} from '@components/atom';
 import COLORS from '@constant/colors';
+import SPACING from '@constant/spacing';
 
-export default function Profile() {
+const Profile: FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.itemContainer}>
@@ -17,13 +18,14 @@ export default function Profile() {
       </View>
     </SafeAreaView>
   );
-}
+};
+export default memo(Profile);
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    paddingHorizontal: 20,
-    paddingVertical: 22,
+    paddingHorizontal: SPACING.xl,
+    paddingVertical: SPACING.xxl,
     justifyContent: 'center',
     backgroundColor: COLORS.neutral100,
   },

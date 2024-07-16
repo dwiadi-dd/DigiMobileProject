@@ -1,26 +1,34 @@
-import {SafeAreaView, StyleSheet, Text, TextInput, View} from 'react-native';
+import {
+  SafeAreaView,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useState} from 'react';
 import COLORS from '@constant/colors';
 import {Button, TextField} from '@components/molecules';
-import {Typography} from '@components/atom';
-import {PostItemProps} from '@components/molecules/PostItem';
+import {Icon, Typography} from '@components/atom';
 import {useNavigation} from '@react-navigation/native';
 import {getTypography} from '@components/atom/Typhography';
+import {usePosts} from '@contexts/PostContext';
+import {PostItemProps} from '@utils/props';
 
 export default function CreatePost() {
   const navigation = useNavigation();
   const [topic, setTopic] = useState('');
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const {addPost} = usePosts();
 
   const handlePost = () => {
     const post: PostItemProps = {
       avatar_url:
         'https://lwfiles.mycourse.app/656ef73b8e59fa6dfcddbe98-public/3073ed5d42a0e38174e311a1a0cb0800.png',
-      name: 'test',
+      name: 'Adi Bangkit',
       headline: 'Mobile Engineer Expert',
       created_at: new Date().toISOString(),
-      post_header: topic,
+      post_header: title,
       post_content: description,
       post_topic: topic,
       post_upvote: 0,
@@ -29,32 +37,29 @@ export default function CreatePost() {
       post_retweet: 0,
     };
 
-    navigation.navigate('Home', post);
+    addPost(post);
+    navigation.goBack();
   };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={{flexDirection: 'row', alignItems: 'center', gap: 24}}>
-          <Button
-            variant="outline"
-            iconName="chevron-left"
-            size="small"
-            disabled={false}
-            children={null}
-            type="icon-only"
-            onPress={() => navigation.goBack()}
-          />
+          <View>
+            <TouchableOpacity>
+              <Icon name="chevron-left" />
+            </TouchableOpacity>
+          </View>
           <Typography
             type="heading"
             size="medium"
             style={{color: COLORS.neutral700}}>
-            Buat
+            Create
           </Typography>
         </View>
         <Button
           type="text-only"
           variant="primary"
-          size="small"
+          size="medium"
           disabled={topic && title && description ? false : true}
           onPress={handlePost}>
           Post
@@ -79,21 +84,17 @@ export default function CreatePost() {
         />
       </View>
       <View style={styles.postFooter}>
-        <Button
-          variant="outline"
-          size="large"
-          iconName="bell"
-          type="icon-only"
-          children={null}
-          disabled={false}
+        <Icon
+          name="paper-clip"
+          fill={COLORS.neutral600}
+          width={24}
+          height={24}
         />
-        <Button
-          variant="outline"
-          size="large"
-          iconName="bell"
-          type="icon-only"
-          children={null}
-          disabled={false}
+        <Icon
+          name="image-regular"
+          fill={COLORS.neutral600}
+          width={24}
+          height={24}
         />
       </View>
     </SafeAreaView>

@@ -1,33 +1,28 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {useContext, useEffect, useState} from 'react';
+import React, {useContext} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import Trending from './trending/Trending';
-import News from './news/News';
 import {TextField} from '@components/molecules';
-import HomeTopBar from '@components/molecules/HomeTopBar';
 import COLORS from '@constant/colors';
 import {Icon, Typography} from '@components/atom';
-import {generateDummyPosts} from '@utils/helper';
 
-import Profile from '@screens/Profile';
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import useAuth from '@utils/hooks/useAuth';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthContext} from '@contexts/AuthContext';
 import Avatar from '@components/atom/Avatar';
+import {usePosts} from '@contexts/PostContext';
+import LoginAlert from '@components/organism/LoginAlert';
+import useAuth from '@hooks/useAuth';
+import Trending from './components/Trending';
 
-const BottomTab = createBottomTabNavigator();
 const TopTab = createMaterialTopTabNavigator();
-export default function Home() {
+
+const Home = () => {
   const {isAuthenticated} = useContext(AuthContext);
   const navigation = useNavigation<NavigationProp<any>>();
   const userAvatar = isAuthenticated
     ? 'https://lwfiles.mycourse.app/656ef73b8e59fa6dfcddbe98-public/3073ed5d42a0e38174e311a1a0cb0800.png'
-    : '../../../assets/images/avatar.png';
-  const [data, setData] = useState<any[]>([]);
-  useEffect(() => {
-    setData(generateDummyPosts());
-  }, []);
+    : undefined;
+
+  const {posts} = usePosts();
 
   const handleCreate = useAuth(() => {
     navigation.navigate('Create Post');
@@ -37,7 +32,11 @@ export default function Home() {
     <View style={styles.flex}>
       <View style={styles.homeHeaderContainer}>
         <View style={styles.postSection}>
-          <Avatar image={userAvatar} size="large" />
+          {isAuthenticated ? (
+            <Avatar image={userAvatar} size="large" />
+          ) : (
+            <Avatar size="large" />
+          )}
           <View style={styles.postField}>
             <TextField placeholder="What`s on your mind?" type="no-label" />
           </View>
@@ -54,6 +53,7 @@ export default function Home() {
               Pertanyaan
             </Typography>
           </TouchableOpacity>
+          <View style={styles.divider} />
           <TouchableOpacity onPress={handleCreate} style={styles.headButton}>
             <Icon name="plus" fill={COLORS.green500} width={16} height={16} />
             <Typography size="xsmall" type="heading">
@@ -67,20 +67,22 @@ export default function Home() {
           tabBarStyle: {backgroundColor: 'white'},
           tabBarIndicatorStyle: {backgroundColor: COLORS.purple600, height: 4},
           tabBarLabelStyle: {fontSize: 14, fontWeight: 'bold'},
+          tabBarActiveTintColor: COLORS.purple600,
+          tabBarInactiveTintColor: COLORS.neutral700,
         }}>
         <TopTab.Screen
           name="Trending"
           children={() => (
             <Trending
-              data={data?.sort((a, b) => b.post_upvote - a.post_upvote)}
+              data={posts?.sort((a, b) => b.post_upvote - a.post_upvote)}
             />
           )}
         />
         <TopTab.Screen
           name="News"
           children={() => (
-            <News
-              data={data?.sort(
+            <Trending
+              data={posts?.sort(
                 (a, b) =>
                   (new Date(b.created_at) as any) -
                   (new Date(a.created_at) as any),
@@ -89,58 +91,11 @@ export default function Home() {
           )}
         />
       </TopTab.Navigator>
+      {!isAuthenticated && <LoginAlert />}
     </View>
   );
-}
-
-export const HomeTab = () => {
-  return (
-    <BottomTab.Navigator screenOptions={{tabBarShowLabel: false}}>
-      <BottomTab.Screen
-        name="Home"
-        component={Home}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <View style={{alignItems: 'center', justifyContent: 'center'}}>
-              <Icon
-                name="home"
-                fill={focused ? COLORS.purple600 : COLORS.neutral400}
-              />
-              <Typography
-                type="heading"
-                size="xsmall"
-                style={{color: focused ? COLORS.purple600 : COLORS.neutral400}}>
-                Home
-              </Typography>
-            </View>
-          ),
-          header: HomeTopBar,
-        }}
-      />
-      <BottomTab.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          tabBarIcon: ({focused}) => (
-            <View style={{alignItems: 'center', justifyContent: 'center'}}>
-              <Icon
-                name="user"
-                fill={focused ? COLORS.purple600 : COLORS.neutral700}
-              />
-              <Typography
-                type="heading"
-                size="xsmall"
-                style={{color: focused ? COLORS.purple600 : COLORS.neutral400}}>
-                Profil
-              </Typography>
-            </View>
-          ),
-          headerShown: false,
-        }}
-      />
-    </BottomTab.Navigator>
-  );
 };
+export default Home;
 
 const styles = StyleSheet.create({
   flex: {flex: 1},
@@ -178,5 +133,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 4,
+  },
+  divider: {
+    height: 20,
+    width: 1,
+    backgroundColor: '#ddd',
   },
 });

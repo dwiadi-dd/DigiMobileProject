@@ -1,6 +1,6 @@
 import {faker} from '@faker-js/faker';
 
-export const generateDummyPosts = (numPosts = 10) => {
+export const generateDummyPosts = (numPosts = 100) => {
   const posts = [];
 
   for (let i = 0; i < numPosts; i++) {
@@ -8,7 +8,7 @@ export const generateDummyPosts = (numPosts = 10) => {
       avatar_url: faker.image.avatar(),
       name: faker.person.fullName(),
       headline: faker.person.jobTitle(),
-      created_at: faker.date.recent(),
+      created_at: faker.date.recent().toISOString(),
       post_header: faker.person.bio(),
       post_content: faker.lorem.paragraph(),
       post_topic: faker.lorem.word(),

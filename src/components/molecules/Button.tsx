@@ -1,19 +1,10 @@
 import {StyleSheet, TouchableOpacity} from 'react-native';
 import React from 'react';
 import Typhography from '../atom/Typhography';
-import Icon, {IconName} from '../atom/Icon/Icon';
+import Icon from '../atom/Icon/Icon';
 import COLORS from '@constant/colors';
 import SPACING from '@constant/spacing';
-
-type ButtonProps = {
-  size: 'small' | 'medium' | 'large';
-  type: 'text-only' | 'icon-left' | 'icon-right' | 'icon-only';
-  variant: 'primary' | 'outline' | 'tertiary' | 'link';
-  disabled: boolean;
-  children: React.ReactNode;
-  iconName?: IconName;
-  onPress?: () => void;
-};
+import {ButtonProps} from '@utils/props';
 
 const getButtonStyles = (variant: string, disabled: boolean) => {
   const color = disabled ? COLORS.neutral400 : COLORS.purple600;

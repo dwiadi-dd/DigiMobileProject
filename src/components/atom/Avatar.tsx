@@ -1,19 +1,24 @@
 import {StyleSheet, View} from 'react-native';
 import React from 'react';
 import {Image} from 'react-native';
-
 type AvatarProps = {
   size: 'xxlarge' | 'xlarge' | 'large' | 'medium' | 'small' | 'xsmall';
   image?: string;
 };
-export default function Avatar({
-  size,
-  image = '../../../assets/img/Avatar.png',
-}: AvatarProps) {
+
+export default function Avatar({size, image}: AvatarProps) {
   const styleSize = styles[size];
+
+  const defaultImage = require('../../../assets/img/avatar.png');
+  const imageSource = image
+    ? typeof image === 'string'
+      ? {uri: image}
+      : image
+    : defaultImage;
+
   return (
     <View>
-      <Image source={{uri: image}} style={[styleSize, styles.avatar]} />
+      <Image source={imageSource} style={[styleSize, styles.avatar]} />
     </View>
   );
 }
