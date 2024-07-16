@@ -5,7 +5,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {FC, memo, useState} from 'react';
 import COLORS from '@constant/colors';
 import {Button, TextField} from '@components/molecules';
 import {Icon, Typography} from '@components/atom';
@@ -14,7 +14,7 @@ import {getTypography} from '@components/atom/Typhography';
 import {usePosts} from '@contexts/PostContext';
 import {PostItemProps} from '@utils/props';
 
-export default function CreatePost() {
+const CreatePost: FC = () => {
   const navigation = useNavigation();
   const [topic, setTopic] = useState('');
   const [title, setTitle] = useState('');
@@ -43,7 +43,7 @@ export default function CreatePost() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <View style={{flexDirection: 'row', alignItems: 'center', gap: 24}}>
+        <View style={styles.formContainer}>
           <View>
             <TouchableOpacity>
               <Icon name="chevron-left" />
@@ -99,13 +99,14 @@ export default function CreatePost() {
       </View>
     </SafeAreaView>
   );
-}
-
+};
+export default memo(CreatePost);
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: COLORS.neutral100,
   },
+  formContainer: {flexDirection: 'row', alignItems: 'center', gap: 24},
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
