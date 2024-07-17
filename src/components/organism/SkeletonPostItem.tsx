@@ -1,18 +1,17 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {memo} from 'react';
+import React, {FC, memo} from 'react';
 import SPACING from '@constant/spacing';
 import {Icon} from '@components/atom';
 import COLORS from '@constant/colors';
 
-export const PostItem = () => {
+export const SkeletonPostItem: FC = () => {
   return (
     <View style={styles.postContainer}>
-      {/* Skeleton for avatar */}
       <View style={styles.headContainer}>
         <View style={[styles.imageSize, styles.skeletonAvatar]} />
         <View>
           <View style={styles.header}>
-            <View style={[styles.skeletonText, {width: 100}]} />
+            <View style={[styles.skeletonTextFull]} />
             <Icon name="ellipsis" width={14} height={14} />
           </View>
           <View style={styles.skeletonText} />
@@ -20,7 +19,6 @@ export const PostItem = () => {
         </View>
       </View>
 
-      {/* Skeleton for content */}
       <View style={styles.contentContainer}>
         <TouchableOpacity>
           <View style={styles.skeletonText} />
@@ -30,10 +28,8 @@ export const PostItem = () => {
         </TouchableOpacity>
       </View>
 
-      {/* Skeleton for label */}
       <View style={styles.skeletonLabel} />
 
-      {/* Skeleton for footer */}
       <View style={styles.footer}>
         <View style={styles.voteContainer}>
           <TouchableOpacity style={styles.voteButton}>
@@ -78,7 +74,7 @@ export const PostItem = () => {
   );
 };
 
-export default memo(PostItem);
+export default memo(SkeletonPostItem);
 
 const styles = StyleSheet.create({
   postContainer: {
@@ -152,6 +148,12 @@ const styles = StyleSheet.create({
     backgroundColor: '#ddd',
     height: 16,
     marginBottom: 8,
+  },
+  skeletonTextFull: {
+    backgroundColor: '#ddd',
+    height: 16,
+    marginBottom: 8,
+    width: 100,
   },
   skeletonLabel: {
     backgroundColor: '#ddd',

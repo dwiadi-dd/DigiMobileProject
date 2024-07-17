@@ -1,11 +1,12 @@
 import {Image, StyleSheet, View} from 'react-native';
-import React, {FunctionComponent} from 'react';
+import React, {FC} from 'react';
 import {Typography} from '@components/atom';
 import {Button} from '@components/molecules';
 import COLORS from '@constant/colors';
 import {useNavigation} from '@react-navigation/native';
+import SPACING from '@constant/spacing';
 
-const LoginAlert: FunctionComponent = () => {
+const LoginAlert: FC = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.loginBanner}>
@@ -39,9 +40,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     height: 52,
-    gap: 4,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    gap: SPACING.xs,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md,
     backgroundColor: COLORS.purple100,
   },
   bannerTextContainer: {

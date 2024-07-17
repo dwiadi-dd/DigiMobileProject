@@ -4,10 +4,10 @@ import SPACING from '@constant/spacing';
 import Typhography from '@components/atom/Typhography';
 import Avatar from '@components/atom/Avatar';
 import {Icon, Typography} from '@components/atom';
-import Label from '../molecules/Label';
 import COLORS from '@constant/colors';
 import {formatTimeAgo} from '@utils/helper';
 import {PostItemProps} from '@utils/props';
+import {Label} from '@components/molecules';
 
 export const PostItem = ({post}: {post: PostItemProps}) => {
   return (

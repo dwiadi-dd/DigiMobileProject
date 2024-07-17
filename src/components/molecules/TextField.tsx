@@ -5,17 +5,7 @@ import Typhography from '../atom/Typhography';
 import COLORS from '@constant/colors';
 import SPACING from '@constant/spacing';
 import FONT_SIZE from '@constant/fontSize';
-
-type TextFieldProps = {
-  state?: 'default' | 'positive' | 'negative' | 'disabled';
-  type?: 'text' | 'password' | 'email' | 'number' | 'no-label';
-  visible?: boolean;
-  label?: string;
-  placeholder?: string;
-  message?: string;
-  onChangeText?: (text: string) => void;
-  value?: string;
-};
+import {TextFieldProps} from '@utils/props';
 
 export default function TextField({
   state = 'default',
@@ -26,6 +16,7 @@ export default function TextField({
   visible = false,
   value,
   onChangeText = () => {},
+  onSubmitEditing,
 }: TextFieldProps) {
   const [isFocused, setIsFocused] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(visible);
@@ -34,7 +25,9 @@ export default function TextField({
   const handleBlur = () => setIsFocused(false);
 
   const getContainerStyle = () => {
-    if (isFocused) return [styles.inputTextContainer, styles.focus];
+    if (isFocused) {
+      return [styles.inputTextContainer, styles.focus];
+    }
     switch (state) {
       case 'default':
         return [styles.inputTextContainer, styles.default];
@@ -76,6 +69,7 @@ export default function TextField({
           editable={state !== 'disabled'}
           onChangeText={onChangeText}
           value={value}
+          onSubmitEditing={onSubmitEditing}
         />
         {type === 'password' && (
           <TouchableOpacity

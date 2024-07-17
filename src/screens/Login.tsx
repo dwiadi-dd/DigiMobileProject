@@ -19,11 +19,13 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
+  const [emailSuccess, setEmailSuccess] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const [isValid, setIsValid] = useState(false);
 
   const validateEmail = (input: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setEmailSuccess(false);
     if (!input) {
       setEmailError('Email is required.');
     } else if (input.length > 254) {
@@ -32,6 +34,7 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
       setEmailError('Please enter a valid email address.');
     } else {
       setEmailError('');
+      setEmailSuccess(true);
     }
   };
 
@@ -66,7 +69,7 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const handleLogin = () => {
     if (
       email.toLowerCase() === 'adibangkit@test.app' &&
-      password === 'Kocak123!'
+      password === 'TestApp123!'
     ) {
       navigation.navigate('HomeTab');
       login();
@@ -124,7 +127,11 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
           <TextField
             label="Email"
             placeholder="Email"
-            state={emailError ? 'negative' : 'default'}
+            state={
+              emailError
+                ? 'negative'
+                : 'default' || (emailSuccess && 'positive')
+            }
             message={emailError}
             onChangeText={handleEmailChange}
             value={email}

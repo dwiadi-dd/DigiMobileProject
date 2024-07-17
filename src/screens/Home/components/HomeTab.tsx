@@ -1,11 +1,11 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from '../Home';
-import HomeTopBar from '@components/molecules/HomeTopBar';
 import Profile from '@screens/Profile';
 import {HomeIcon, ProfileIcon} from './IconBar';
 import {TouchableOpacity} from 'react-native';
 import useAuth from '@hooks/useAuth';
+import {HomeTopBar} from '@components/molecules';
 
 const BottomTab = createBottomTabNavigator();
 const renderHomeIcon = ({focused}: {focused: boolean}) => (

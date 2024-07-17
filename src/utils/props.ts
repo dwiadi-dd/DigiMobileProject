@@ -24,6 +24,18 @@ export type PostItemProps = {
   post_retweet: number;
 };
 
+export type TextFieldProps = {
+  state?: 'default' | 'positive' | 'negative' | 'disabled';
+  type?: 'text' | 'password' | 'email' | 'number' | 'no-label';
+  visible?: boolean;
+  label?: string;
+  placeholder?: string;
+  message?: string;
+  onChangeText?: (text: string) => void;
+  value?: string;
+  onSubmitEditing?: ({nativeEvent}: {nativeEvent: any}) => void;
+};
+
 export type IconProps = {
   focused: boolean;
 };

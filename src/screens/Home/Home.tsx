@@ -8,10 +8,9 @@ import {Icon, Typography} from '@components/atom';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthContext} from '@contexts/AuthContext';
 import Avatar from '@components/atom/Avatar';
-import {usePosts} from '@contexts/PostContext';
 import LoginAlert from '@components/organism/LoginAlert';
 import useAuth from '@hooks/useAuth';
-import Trending from './components/Trending';
+import Feed from './components/Feed';
 
 const TopTab = createMaterialTopTabNavigator();
 
@@ -21,8 +20,6 @@ const Home = () => {
   const userAvatar = isAuthenticated
     ? 'https://lwfiles.mycourse.app/656ef73b8e59fa6dfcddbe98-public/3073ed5d42a0e38174e311a1a0cb0800.png'
     : undefined;
-
-  const {posts} = usePosts();
 
   const handleCreate = useAuth(() => {
     navigation.navigate('Create Post');
@@ -72,24 +69,9 @@ const Home = () => {
         }}>
         <TopTab.Screen
           name="Trending"
-          children={() => (
-            <Trending
-              data={posts?.sort((a, b) => b.post_upvote - a.post_upvote)}
-            />
-          )}
+          children={() => <Feed sortBy="trend" />}
         />
-        <TopTab.Screen
-          name="News"
-          children={() => (
-            <Trending
-              data={posts?.sort(
-                (a, b) =>
-                  (new Date(b.created_at) as any) -
-                  (new Date(a.created_at) as any),
-              )}
-            />
-          )}
-        />
+        <TopTab.Screen name="News" children={() => <Feed sortBy="news" />} />
       </TopTab.Navigator>
       {!isAuthenticated && <LoginAlert />}
     </View>

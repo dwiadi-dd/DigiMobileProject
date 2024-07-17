@@ -1,6 +1,6 @@
 import {faker} from '@faker-js/faker';
 
-export const generateDummyPosts = (numPosts = 100) => {
+export const generateDummyPosts = (numPosts = 10) => {
   const posts = [];
 
   for (let i = 0; i < numPosts; i++) {
