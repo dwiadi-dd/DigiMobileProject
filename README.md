@@ -1,4 +1,3 @@
-generate me simple reade# DigiMobileProject
 
 This is a clone of the Investly app, created as part of my mobile development learning phase with React Native.
 
@@ -20,3 +19,6 @@ The DigiMobileProject is a mobile application built using React Native. It aims 
 ## Technologies Used
 
 -soon
+
+
+Dwi Adi Bangkit - Digicamp 2024
