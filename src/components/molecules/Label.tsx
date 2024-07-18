@@ -1,5 +1,5 @@
 import {StyleSheet, View} from 'react-native';
-import React, {ReactNode} from 'react';
+import React, {FC, ReactNode} from 'react';
 import COLORS from '@constant/colors';
 import {Typography} from '@components/atom';
 
@@ -9,7 +9,7 @@ type LabelProps = {
   children: ReactNode;
 };
 
-const Label: React.FC<LabelProps> = ({variant, color, children}) => {
+const Label: FC<LabelProps> = ({variant, color, children}) => {
   const getStyle = () => {
     switch (variant) {
       case 'primary':

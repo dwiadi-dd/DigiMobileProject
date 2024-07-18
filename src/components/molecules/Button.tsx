@@ -1,5 +1,5 @@
 import {StyleSheet, TouchableOpacity} from 'react-native';
-import React from 'react';
+import React, {FC} from 'react';
 import Typhography from '../atom/Typhography';
 import Icon from '../atom/Icon/Icon';
 import COLORS from '@constant/colors';
@@ -54,7 +54,7 @@ const getButtonStyles = (variant: string, disabled: boolean) => {
   }
 };
 
-export default function Button({
+export const Button: FC<ButtonProps> = ({
   disabled = false,
   size = 'medium',
   type = 'text-only',
@@ -62,7 +62,7 @@ export default function Button({
   iconName,
   children,
   onPress,
-}: ButtonProps) {
+}: ButtonProps) => {
   const sizeStyle = styles[size];
   const variantStyle = getButtonStyles(variant, disabled);
   const {textColor, ...buttonStyle} = variantStyle;
@@ -108,7 +108,7 @@ export default function Button({
       )}
     </TouchableOpacity>
   );
-}
+};
 const iconSizes = {
   small: 12,
   medium: 16,
@@ -135,3 +135,5 @@ const styles = StyleSheet.create({
     opacity: 0.6,
   },
 });
+
+export default Button;

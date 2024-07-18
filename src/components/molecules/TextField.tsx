@@ -1,13 +1,15 @@
 import {StyleSheet, View, TextInput, TouchableOpacity} from 'react-native';
-import React, {useState} from 'react';
+import React, {FC, useContext, useState} from 'react';
 import Icon from '../atom/Icon/Icon';
 import Typhography from '../atom/Typhography';
 import COLORS from '@constant/colors';
 import SPACING from '@constant/spacing';
 import FONT_SIZE from '@constant/fontSize';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
+import {AuthContext} from '@contexts/AuthContext';
 import {TextFieldProps} from '@utils/props';
 
-export default function TextField({
+const TextField: FC<TextFieldProps> = ({
   state = 'default',
   type = 'text',
   placeholder = 'Input',
@@ -17,11 +19,19 @@ export default function TextField({
   value,
   onChangeText = () => {},
   onSubmitEditing,
-}: TextFieldProps) {
+  isProtected = false,
+}: TextFieldProps) => {
+  const navigation = useNavigation<NavigationProp<any>>();
+  const {isAuthenticated} = useContext(AuthContext);
+
   const [isFocused, setIsFocused] = useState(false);
   const [isPasswordVisible, setIsPasswordVisible] = useState(visible);
-
-  const handleFocus = () => setIsFocused(true);
+  const handleFocus = () => {
+    if (isProtected && !isAuthenticated) {
+      navigation.navigate('Login');
+    }
+    setIsFocused(true);
+  };
   const handleBlur = () => setIsFocused(false);
 
   const getContainerStyle = () => {
@@ -90,7 +100,7 @@ export default function TextField({
       )}
     </View>
   );
-}
+};
 
 const styles = StyleSheet.create({
   message: {
@@ -108,7 +118,7 @@ const styles = StyleSheet.create({
   inputTextContainer: {
     borderWidth: 1,
     borderRadius: SPACING.sm,
-    paddingHorizontal: SPACING.lg,
+    paddingHorizontal: SPACING.md,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -134,3 +144,5 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.purple100,
   },
 });
+
+export default TextField;

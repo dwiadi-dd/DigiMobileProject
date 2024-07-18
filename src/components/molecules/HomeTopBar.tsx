@@ -1,9 +1,9 @@
 import {Image, StyleSheet, TouchableOpacity, View} from 'react-native';
-import React from 'react';
+import React, {FC} from 'react';
 import COLORS from '@constant/colors';
 import {Icon} from '@components/atom';
 
-export default function HomeTopBar() {
+const HomeTopBar: FC = () => {
   return (
     <View style={styles.container}>
       <Image
@@ -15,19 +15,20 @@ export default function HomeTopBar() {
       </TouchableOpacity>
     </View>
   );
-}
+};
+export default HomeTopBar;
 
 const styles = StyleSheet.create({
   container: {
     backgroundColor: COLORS.neutral100,
     paddingHorizontal: 24,
-    paddingVertical: 12,
+    paddingVertical: 20,
     flex: 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   imageSise: {
-    width: 84,
-    height: 24,
+    width: 100,
+    height: 30,
   },
 });
