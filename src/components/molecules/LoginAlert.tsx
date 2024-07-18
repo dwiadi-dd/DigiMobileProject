@@ -1,45 +1,56 @@
-import React from 'react';
-import {View, Text, Image, StyleSheet, TouchableOpacity} from 'react-native';
+import {Image, StyleSheet, View} from 'react-native';
+import React, {FC} from 'react';
+import {Typography} from '@components/atom';
+import {Button} from '@components/molecules';
+import COLORS from '@constant/colors';
+import {useNavigation} from '@react-navigation/native';
+import SPACING from '@constant/spacing';
 
-const LoginAlert = ({onLogin}) => {
+const LoginAlert: FC = () => {
+  const navigation = useNavigation();
   return (
-    <View style={styles.container}>
+    <View style={styles.loginBanner}>
       <Image
         source={require('../../../assets/img/kambing.png')}
-        style={styles.avatar}
+        style={styles.logo}
       />
-      <Text style={styles.text}>
-        Temukan inspirasi investasi,{' '}
-        <TouchableOpacity style={styles.link} onPress={onLogin}>
+      <View style={styles.bannerTextContainer}>
+        <Typography type="paragraph" size="small">
+          Temukan inspirasi investasi,
+        </Typography>
+        <Button
+          variant="link"
+          size="small"
+          type="text-only"
+          onPress={() => {
+            navigation.navigate('Login' as never);
+          }}>
           Masuk Yuk!
-        </TouchableOpacity>
-      </Text>
+        </Button>
+      </View>
     </View>
   );
 };
 
+export default LoginAlert;
+
 const styles = StyleSheet.create({
-  container: {
+  loginBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#f0f4ff',
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ddd',
+    justifyContent: 'center',
+    height: 52,
+    gap: SPACING.xs,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.md,
+    backgroundColor: COLORS.purple100,
   },
-  avatar: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginRight: 10,
+  bannerTextContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
-  text: {
-    fontSize: 16,
-  },
-  link: {
-    color: '#007bff',
-    fontWeight: 'bold',
+  logo: {
+    width: 39,
+    height: 24,
   },
 });
-
-export default LoginAlert;
