@@ -1,5 +1,5 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {FC, memo} from 'react';
+import React, {FC} from 'react';
 import SPACING from '@constant/spacing';
 import {Icon} from '@components/atom';
 import COLORS from '@constant/colors';
@@ -74,7 +74,7 @@ export const SkeletonPostItem: FC = () => {
   );
 };
 
-export default memo(SkeletonPostItem);
+export default SkeletonPostItem;
 
 const styles = StyleSheet.create({
   postContainer: {
