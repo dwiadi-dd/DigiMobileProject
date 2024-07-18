@@ -1,16 +1,16 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React, {useContext} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {TextField} from '@components/molecules';
+import {LoginAlert, TextField} from '@components/molecules';
 import COLORS from '@constant/colors';
 import {Icon, Typography} from '@components/atom';
 
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import {AuthContext} from '@contexts/AuthContext';
 import Avatar from '@components/atom/Avatar';
-import LoginAlert from '@components/organism/LoginAlert';
-import useAuth from '@hooks/useAuth';
 import Feed from './components/Feed';
+import useAuth from '@hooks/useAuth';
+import SPACING from '@constant/spacing';
 
 const TopTab = createMaterialTopTabNavigator();
 
@@ -24,7 +24,6 @@ const Home = () => {
   const handleCreate = useAuth(() => {
     navigation.navigate('Create Post');
   });
-
   return (
     <View style={styles.flex}>
       <View style={styles.homeHeaderContainer}>
@@ -35,7 +34,11 @@ const Home = () => {
             <Avatar size="large" />
           )}
           <View style={styles.postField}>
-            <TextField placeholder="What`s on your mind?" type="no-label" />
+            <TextField
+              placeholder="Apa yang ingin kamu tanyakan?"
+              type="no-label"
+              isProtected={true}
+            />
           </View>
         </View>
         <View style={styles.buttonSection}>
@@ -46,14 +49,14 @@ const Home = () => {
               width={16}
               height={16}
             />
-            <Typography size="xsmall" type="heading">
+            <Typography size="small" type="heading">
               Pertanyaan
             </Typography>
           </TouchableOpacity>
           <View style={styles.divider} />
           <TouchableOpacity onPress={handleCreate} style={styles.headButton}>
             <Icon name="plus" fill={COLORS.green500} width={16} height={16} />
-            <Typography size="xsmall" type="heading">
+            <Typography size="small" type="heading">
               Post
             </Typography>
           </TouchableOpacity>
@@ -62,7 +65,7 @@ const Home = () => {
       <TopTab.Navigator
         screenOptions={{
           tabBarStyle: {backgroundColor: 'white'},
-          tabBarIndicatorStyle: {backgroundColor: COLORS.purple600, height: 4},
+          tabBarIndicatorStyle: {backgroundColor: COLORS.purple600, height: 3},
           tabBarLabelStyle: {fontSize: 14, fontWeight: 'bold'},
           tabBarActiveTintColor: COLORS.purple600,
           tabBarInactiveTintColor: COLORS.neutral700,
@@ -85,27 +88,25 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.neutral100,
     borderRadius: 16,
     borderColor: COLORS.neutral300,
+    paddingHorizontal: SPACING.lg,
+    paddingVertical: SPACING.lg,
+    gap: SPACING.md,
     borderWidth: 1,
     marginVertical: 14,
-    marginHorizontal: 14,
+    marginHorizontal: 10,
   },
   postSection: {
     flexDirection: 'row',
     width: 'auto',
-    paddingVertical: 13,
-    paddingHorizontal: 24,
     alignItems: 'center',
-    gap: 12,
+    gap: 8,
   },
   postField: {flex: 2, width: 'auto'},
   buttonSection: {
     flexDirection: 'row',
     width: 'auto',
-    paddingVertical: 13,
-    paddingHorizontal: 24,
     alignItems: 'center',
     gap: 12,
-    marginLeft: 10,
     justifyContent: 'space-between',
   },
   headButton: {
@@ -114,11 +115,11 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 4,
+    gap: 10,
   },
   divider: {
-    height: 20,
+    height: 24,
     width: 1,
-    backgroundColor: '#ddd',
+    backgroundColor: COLORS.neutral300,
   },
 });

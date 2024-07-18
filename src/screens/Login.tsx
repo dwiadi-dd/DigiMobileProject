@@ -14,7 +14,7 @@ import SPACING from '@constant/spacing';
 import COLORS from '@constant/colors';
 
 const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
-  const {login} = useContext(AuthContext);
+  const {login, isAuthenticated} = useContext(AuthContext);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -23,15 +23,23 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const [passwordError, setPasswordError] = useState('');
   const [isValid, setIsValid] = useState(false);
 
+  useEffect(() => {
+    if (isAuthenticated) {
+      navigation.navigate('HomeTab');
+    }
+  }, [isAuthenticated, navigation]);
+
   const validateEmail = (input: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    setEmailSuccess(false);
     if (!input) {
       setEmailError('Email is required.');
+      setEmailSuccess(false);
     } else if (input.length > 254) {
       setEmailError('Email should not exceed 254 characters.');
+      setEmailSuccess(false);
     } else if (!emailRegex.test(input)) {
       setEmailError('Please enter a valid email address.');
+      setEmailSuccess(false);
     } else {
       setEmailError('');
       setEmailSuccess(true);
@@ -84,9 +92,8 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   };
 
   const handleEmailChange = (text: string) => {
-    const trimmedEmail = text.trim().toLowerCase();
-    setEmail(trimmedEmail);
-    validateEmail(trimmedEmail);
+    setEmail(text);
+    validateEmail(text);
   };
 
   const handlePasswordChange = (text: string) => {
@@ -128,9 +135,7 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
             label="Email"
             placeholder="Email"
             state={
-              emailError
-                ? 'negative'
-                : 'default' || (emailSuccess && 'positive')
+              emailError ? 'negative' : emailSuccess ? 'positive' : 'default'
             }
             message={emailError}
             onChangeText={handleEmailChange}

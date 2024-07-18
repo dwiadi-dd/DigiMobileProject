@@ -1,7 +1,6 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import React, {memo} from 'react';
 import SPACING from '@constant/spacing';
-import Typhography from '@components/atom/Typhography';
 import Avatar from '@components/atom/Avatar';
 import {Icon, Typography} from '@components/atom';
 import COLORS from '@constant/colors';
@@ -10,40 +9,48 @@ import {PostItemProps} from '@utils/props';
 import {Label} from '@components/molecules';
 
 export const PostItem = ({post}: {post: PostItemProps}) => {
+  if (!post) {
+    return null;
+  }
+
   return (
     <View style={styles.postContainer}>
       <View style={styles.headContainer}>
-        <Avatar image={post?.avatar_url} size="large" />
-        <View>
+        <Avatar image={post.avatar_url} size="large" />
+        <View style={styles.flex}>
           <View style={styles.header}>
-            <Typography type="heading" size="medium">
-              {post?.name}
+            <Typography type="heading" size="small">
+              {post.name}
             </Typography>
-            <Icon name="ellipsis" width={14} height={14} />
+            <View style={styles.touchWrapper}>
+              <Icon name="ellipsis" width={14} height={14} />
+            </View>
           </View>
-          <Typography type="paragraph" size="medium">
-            {post?.headline}
+          <Typography
+            type="paragraph"
+            size="medium"
+            style={{color: COLORS.neutral600}}>
+            {post.headline}
           </Typography>
-          <Typography type="paragraph" size="small">
-            {formatTimeAgo(new Date(post?.created_at))}
+          <Typography
+            type="paragraph"
+            size="small"
+            style={{color: COLORS.neutral600}}>
+            {formatTimeAgo(new Date(post.created_at))}
           </Typography>
         </View>
       </View>
 
       <View style={styles.contentContainer}>
-        <TouchableOpacity>
-          <Typhography type="heading" size="medium">
-            {post?.post_header}
-          </Typhography>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Typhography type="paragraph" size="medium">
-            {post?.post_content}
-          </Typhography>
-        </TouchableOpacity>
+        <Typography type="heading" size="medium">
+          {post.post_header}
+        </Typography>
+        <Typography type="paragraph" size="medium">
+          {post.post_content}
+        </Typography>
       </View>
       <Label color="green" variant="tertiary">
-        {post?.post_topic}
+        {post.post_topic}
       </Label>
       <View style={styles.footer}>
         <View style={styles.voteContainer}>
@@ -54,9 +61,9 @@ export const PostItem = ({post}: {post: PostItemProps}) => {
               name="arrow-down"
               fill={COLORS.neutral700}
             />
-            <Typhography type="paragraph" size="small">
-              {post?.post_upvote}
-            </Typhography>
+            <Typography type="paragraph" size="small">
+              {post.post_upvote}
+            </Typography>
           </TouchableOpacity>
           <View style={styles.divider} />
           <TouchableOpacity style={styles.voteButton}>
@@ -75,9 +82,9 @@ export const PostItem = ({post}: {post: PostItemProps}) => {
             name="comment"
             fill={COLORS.neutral700}
           />
-          <Typhography type="paragraph" size="small">
-            {post?.post_comment}
-          </Typhography>
+          <Typography type="paragraph" size="small">
+            {post.post_comment}
+          </Typography>
         </TouchableOpacity>
         <TouchableOpacity style={styles.footerButton}>
           <Icon
@@ -86,9 +93,9 @@ export const PostItem = ({post}: {post: PostItemProps}) => {
             name="retweet"
             fill={COLORS.neutral700}
           />
-          <Typhography type="paragraph" size="small">
-            {post?.post_retweet}
-          </Typhography>
+          <Typography type="paragraph" size="small">
+            {post.post_retweet}
+          </Typography>
         </TouchableOpacity>
       </View>
     </View>
@@ -106,23 +113,29 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#eee',
   },
-  headContainer: {flexDirection: 'row', alignItems: 'center', gap: 12},
-  flex: {flex: 1},
-  imageSize: {
-    width: 50,
-    height: 50,
-    borderRadius: 50,
-    marginRight: SPACING.lg,
+  headContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 12,
+  },
+  flex: {
+    flex: 1,
   },
   contentContainer: {
     marginTop: 12,
     marginBottom: 8,
+    gap: SPACING.xs,
+  },
+  touchWrapper: {
+    width: 100,
+    flex: 1,
+    alignItems: 'flex-end',
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    width: 300,
+    width: '100%',
   },
   footer: {
     flexDirection: 'row',

@@ -1,12 +1,12 @@
-import {StyleSheet, View} from 'react-native';
+import {SafeAreaView, StyleSheet, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 import COLORS from '@constant/colors';
 import {TextField} from '@components/molecules';
 
-import {RouteProp, useRoute} from '@react-navigation/native';
+import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import PostItem from '@components/organism/PostItem';
 import {PostItemProps} from '@utils/props';
-import {Icon} from '@components/atom';
+import {Icon, Typography} from '@components/atom';
 
 type DetailPostRouteProp = RouteProp<
   {DetailPost: {post: PostItemProps}},
@@ -15,16 +15,35 @@ type DetailPostRouteProp = RouteProp<
 
 export const DetailPost = () => {
   const route = useRoute<DetailPostRouteProp>();
-  const {post} = route.params;
+  const navigation = useNavigation();
 
+  const {post} = route.params;
+  const handleBack = () => {
+    navigation.goBack();
+  };
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <View>
+          <TouchableOpacity onPress={handleBack}>
+            <Icon name="chevron-left" />
+          </TouchableOpacity>
+        </View>
+        <Typography
+          type="heading"
+          size="large"
+          style={{color: COLORS.neutral700}}>
+          Post
+        </Typography>
+      </View>
       <PostItem post={post} />
       <View style={styles.flex} />
-
       <View style={styles.footerContainer}>
         <View style={styles.textContainer}>
-          <TextField placeholder="What`s on your mind?" type="no-label" />
+          <TextField
+            placeholder="Apa yang ingin kamu tanyakan?"
+            type="no-label"
+          />
         </View>
         <View style={styles.buttonContainer}>
           <Icon
@@ -35,12 +54,20 @@ export const DetailPost = () => {
           />
         </View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  flex: {flex: 1},
+  flex: {flex: 1, paddingTop: 200},
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    gap: 24,
+  },
   container: {
     flex: 1,
     backgroundColor: COLORS.neutral100,
@@ -49,6 +76,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.neutral400,
     width: 48,
     height: 48,
+    paddingTop: 8,
     alignItems: 'center',
     justifyContent: 'center',
     borderRadius: 8,

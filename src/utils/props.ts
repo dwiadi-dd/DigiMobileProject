@@ -13,7 +13,7 @@ export type ButtonProps = {
 export type PostItemProps = {
   avatar_url: string;
   name: string;
-  headline: string | null;
+  headline: string;
   created_at: string;
   post_header: string;
   post_content: string;
@@ -34,6 +34,7 @@ export type TextFieldProps = {
   onChangeText?: (text: string) => void;
   value?: string;
   onSubmitEditing?: ({nativeEvent}: {nativeEvent: any}) => void;
+  isProtected?: boolean;
 };
 
 export type IconProps = {

@@ -28,7 +28,11 @@ export default function MainNavigation() {
           component={HomeTab}
           options={{headerShown: false}}
         />
-        <Stack.Screen name="Post" component={DetailPost} />
+        <Stack.Screen
+          name="Post"
+          component={DetailPost}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="Create Post"
           component={CreatePost}

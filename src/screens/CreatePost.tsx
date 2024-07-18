@@ -40,18 +40,21 @@ const CreatePost: FC = () => {
     addPost(post);
     navigation.goBack();
   };
+  const handleBack = () => {
+    navigation.goBack();
+  };
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <View style={styles.formContainer}>
           <View>
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleBack}>
               <Icon name="chevron-left" />
             </TouchableOpacity>
           </View>
           <Typography
             type="heading"
-            size="medium"
+            size="large"
             style={{color: COLORS.neutral700}}>
             Create
           </Typography>
@@ -66,7 +69,12 @@ const CreatePost: FC = () => {
         </Button>
       </View>
       <View style={styles.contentHolder}>
-        <TextField placeholder="Topic" value={topic} onChangeText={setTopic} />
+        <TextField
+          placeholder="Topic"
+          value={topic}
+          onChangeText={setTopic}
+          type="no-label"
+        />
         <TextInput
           placeholder="Judul"
           value={title}
