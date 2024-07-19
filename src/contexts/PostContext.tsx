@@ -36,7 +36,7 @@ export const PostsProvider: FunctionComponent<{children: React.ReactNode}> = ({
 
     setTimeout(() => {
       setLoading(false);
-    }, 10000);
+    }, 4000);
   }, []);
 
   const addPost = (post: PostItemProps) => {
