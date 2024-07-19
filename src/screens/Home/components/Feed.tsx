@@ -8,12 +8,12 @@ import {
 } from 'react-native';
 import {Typography} from '@components/atom';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
+import PostItem from '@components/organism/PostItem';
 import {PostItemProps} from '@utils/props';
 import useAuth from '@hooks/useAuth';
 import {usePosts} from '@contexts/PostContext';
 import SPACING from '@constant/spacing';
 import {SkeletonPostItem} from '@components/molecules';
-import PostItem from '@components/organism/PostItem';
 
 const Feed = ({sortBy}: {sortBy: string}) => {
   const navigation = useNavigation<NavigationProp<any>>();

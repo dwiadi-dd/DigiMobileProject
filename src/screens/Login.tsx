@@ -14,7 +14,7 @@ import SPACING from '@constant/spacing';
 import COLORS from '@constant/colors';
 
 const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
-  const {login, isAuthenticated} = useContext(AuthContext);
+  const {login} = useContext(AuthContext);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,12 +22,6 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const [emailSuccess, setEmailSuccess] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const [isValid, setIsValid] = useState(false);
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigation.navigate('HomeTab');
-    }
-  }, [isAuthenticated, navigation]);
 
   const validateEmail = (input: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

@@ -32,11 +32,11 @@ export const PostsProvider: FunctionComponent<{children: React.ReactNode}> = ({
 
   useEffect(() => {
     setLoading(true);
+    setPosts(generateDummyPosts());
 
     setTimeout(() => {
-      setPosts(generateDummyPosts());
       setLoading(false);
-    }, 6000);
+    }, 10000);
   }, []);
 
   const addPost = (post: PostItemProps) => {
