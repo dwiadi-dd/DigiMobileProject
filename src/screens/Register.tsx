@@ -13,14 +13,16 @@ import {AuthContext} from '@contexts/AuthContext';
 import SPACING from '@constant/spacing';
 import COLORS from '@constant/colors';
 
-const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
+const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const {login} = useContext(AuthContext);
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [emailSuccess, setEmailSuccess] = useState(false);
   const [passwordError, setPasswordError] = useState('');
+  const [confirmPasswordError, setConfirmPasswordError] = useState('');
   const [isValid, setIsValid] = useState(false);
 
   const validateEmail = (input: string) => {
@@ -68,6 +70,16 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
     }
   };
 
+  const validateConfirmPassword = (input: string) => {
+    if (input !== password) {
+      setConfirmPasswordError(
+        'Password and Confirm Password must be the same.',
+      );
+    } else {
+      setConfirmPasswordError('');
+    }
+  };
+
   const handleLogin = () => {
     if (
       email.toLowerCase() === 'adibangkit@test.app' &&
@@ -89,10 +101,13 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
     setEmail(text);
     validateEmail(text);
   };
-
   const handlePasswordChange = (text: string) => {
     setPassword(text);
     validatePassword(text);
+  };
+  const handleConfirmPasswordChange = (text: string) => {
+    setConfirmPassword(text);
+    validateConfirmPassword(text);
   };
 
   useEffect(() => {
@@ -116,18 +131,18 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
             variant="link"
             size="medium"
             onPress={handleLewati}>
-            Lewati
+            Masuk
           </Button>
         </View>
       </View>
       <View style={styles.container}>
         <Typography size="large" type="heading" style={styles.centerText}>
-          Masuk ke Investly
+          Buat Akun
         </Typography>
         <View style={styles.formContainer}>
           <TextField
             label="Email"
-            placeholder="Email"
+            placeholder="Masukan Email Kamu"
             state={
               emailError ? 'negative' : emailSuccess ? 'positive' : 'default'
             }
@@ -138,32 +153,28 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
           <TextField
             type="password"
             label="Password"
-            placeholder="Password"
+            placeholder="Masukan Password Kamu"
             state={passwordError ? 'negative' : 'default'}
             message={passwordError}
             onChangeText={handlePasswordChange}
             value={password}
           />
-          <View style={styles.helperContainer}>
-            <Button type="text-only" variant="link" size="small">
-              Lupa Password
-            </Button>
-          </View>
-          <Button
-            type="text-only"
-            variant="primary"
-            size="medium"
-            disabled={!isValid}
-            onPress={handleLogin}>
-            Masuk
-          </Button>
+          <TextField
+            type="password"
+            label="Konfirmasi Password"
+            placeholder="Masukan Konfirmasi Password"
+            state={confirmPasswordError ? 'negative' : 'default'}
+            message={confirmPasswordError}
+            onChangeText={handleConfirmPasswordChange}
+            value={confirmPassword}
+          />
         </View>
-
         <View style={styles.flex} />
         <Button
           type="text-only"
-          variant="outline"
+          variant="primary"
           size="medium"
+          disabled={!isValid}
           onPress={handleLogin}>
           Daftar
         </Button>
@@ -172,7 +183,7 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   );
 };
 
-export default Login;
+export default Register;
 
 const styles = StyleSheet.create({
   viewContainer: {backgroundColor: COLORS.neutral100, flex: 1},

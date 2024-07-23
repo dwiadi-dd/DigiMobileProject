@@ -7,12 +7,18 @@ import Login from '@screens/Login';
 import {DetailPost} from '@screens/DetailPost';
 import CreatePost from '@screens/CreatePost';
 import {HomeTab} from '@screens/Home/components/HomeTab';
+import Register from '@screens/Register';
 const Stack = createNativeStackNavigator();
 
 export default function MainNavigation() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
+        <Stack.Screen
+          name="Register"
+          component={Register}
+          options={{headerShown: false}}
+        />
         <Stack.Screen
           name="OnBoarding"
           component={Onboarding}
