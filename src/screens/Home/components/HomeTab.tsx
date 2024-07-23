@@ -17,7 +17,11 @@ const renderProfileIcon = ({focused}: {focused: boolean}) => (
 
 export const HomeTab = () => {
   return (
-    <BottomTab.Navigator screenOptions={{tabBarShowLabel: false}}>
+    <BottomTab.Navigator
+      screenOptions={{
+        tabBarShowLabel: false,
+        tabBarStyle: {height: 60},
+      }}>
       <BottomTab.Screen
         name="Home"
         component={Home}

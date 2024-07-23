@@ -122,7 +122,7 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
       </View>
       <View style={styles.container}>
         <Typography size="large" type="heading" style={styles.centerText}>
-          Masuk Ke Investly
+          Masuk ke Investly
         </Typography>
         <View style={styles.formContainer}>
           <TextField
@@ -158,7 +158,7 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
           size="medium"
           disabled={!isValid}
           onPress={handleLogin}>
-          Login
+          Masuk
         </Button>
       </View>
     </SafeAreaView>
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: SPACING.xl,
-    paddingVertical: SPACING.xl7,
+    paddingVertical: SPACING.sm,
     justifyContent: 'flex-start',
     gap: SPACING.sm,
   },
@@ -202,7 +202,7 @@ const styles = StyleSheet.create({
   helperContainer: {
     justifyContent: 'flex-start',
     alignItems: 'flex-start',
-    marginTop: SPACING.xs,
+    marginLeft: -8,
   },
   flex: {flex: 1},
   centerText: {textAlign: 'center'},

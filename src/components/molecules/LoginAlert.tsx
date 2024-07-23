@@ -38,10 +38,10 @@ const styles = StyleSheet.create({
   loginBanner: {
     flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    justifyContent: 'flex-start',
     height: 52,
-    gap: SPACING.xs,
-    paddingHorizontal: SPACING.lg,
+    gap: SPACING.xxl,
+    paddingHorizontal: SPACING.xxl,
     paddingVertical: SPACING.md,
     backgroundColor: COLORS.purple100,
   },

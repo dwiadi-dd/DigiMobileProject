@@ -12,7 +12,7 @@ const getButtonStyles = (variant: string, disabled: boolean) => {
     borderWidth: 1,
     borderColor: 'transparent',
     borderRadius: 32,
-    textColor: '#fff',
+    textColor: COLORS.neutral100,
     alignItems: 'center' as 'center',
     justifyContent: 'center' as 'center',
     flexDirection: 'row' as 'row',
@@ -24,7 +24,7 @@ const getButtonStyles = (variant: string, disabled: boolean) => {
         ...baseStyles,
         backgroundColor: color,
         borderColor: 'transparent',
-        textColor: '#FFFFFF',
+        textColor: COLORS.neutral100,
       };
     case 'outline':
       return {
@@ -49,6 +49,7 @@ const getButtonStyles = (variant: string, disabled: boolean) => {
         paddingHorizontal: 0,
         paddingVertical: 0,
       };
+
     default:
       return baseStyles;
   }
@@ -76,7 +77,7 @@ export const Button: FC<ButtonProps> = ({
       {type === 'icon-left' && !!iconName && (
         <Icon
           name={iconName}
-          fill={disabled ? COLORS.neutral700 : textColor}
+          fill={disabled ? COLORS.neutral100 : textColor}
           width={iconSize}
           height={iconSize}
         />
@@ -84,7 +85,7 @@ export const Button: FC<ButtonProps> = ({
       {type === 'icon-only' && !!iconName ? (
         <Icon
           name={iconName}
-          fill={disabled ? COLORS.neutral700 : textColor}
+          fill={disabled ? COLORS.neutral100 : textColor}
           width={iconSize}
           height={iconSize}
         />
@@ -92,7 +93,7 @@ export const Button: FC<ButtonProps> = ({
         <Typhography
           type="heading"
           size={size}
-          color={{color: disabled ? COLORS.neutral700 : textColor}}
+          color={{color: disabled ? COLORS.neutral100 : textColor}}
           style={{paddingHorizontal: SPACING.sm}}>
           {children}
         </Typhography>
@@ -101,7 +102,7 @@ export const Button: FC<ButtonProps> = ({
       {type === 'icon-right' && !!iconName && (
         <Icon
           name={iconName}
-          fill={disabled ? COLORS.neutral700 : textColor}
+          fill={disabled ? COLORS.neutral100 : textColor}
           width={iconSize}
           height={iconSize}
         />
@@ -132,7 +133,7 @@ const styles = StyleSheet.create({
     borderRadius: SPACING.xs,
   },
   disabled: {
-    opacity: 0.6,
+    opacity: 1,
   },
 });
 

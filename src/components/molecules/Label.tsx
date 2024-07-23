@@ -41,10 +41,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignSelf: 'baseline',
   },
-  text: {
-    fontSize: 16,
-    color: '#fff',
-  },
   primary: {
     backgroundColor: COLORS.neutral100,
   },

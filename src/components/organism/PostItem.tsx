@@ -17,7 +17,7 @@ export const PostItem = ({post}: {post: PostItemProps}) => {
     <View style={styles.postContainer}>
       <View style={styles.headContainer}>
         <Avatar image={post.avatar_url} size="large" />
-        <View style={styles.flex}>
+        <View style={styles.headerPartInfo}>
           <View style={styles.header}>
             <Typography type="heading" size="small">
               {post.name}
@@ -115,11 +115,15 @@ const styles = StyleSheet.create({
   },
   headContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
+    alignItems: 'flex-start',
+    gap: 15,
   },
   flex: {
     flex: 1,
+  },
+  headerPartInfo: {
+    flex: 1,
+    gap: 3,
   },
   contentContainer: {
     marginTop: 12,
