@@ -1,50 +1,68 @@
-import axios from 'axios';
+import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
 
-const api = axios.create({
-  baseURL: 'https://develop.investly.id/api',
-  headers: {
-    'Content-Type': 'application/json',
-  },
-});
+const createApiInstance = (baseURL: string): AxiosInstance => {
+  const instance = axios.create({
+    baseURL,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-export const getRequest = async (url: string, params?: Record<string, any>) => {
-  try {
-    const config = params && Object.keys(params).length > 0 ? {params} : {};
-    const response = await api.get(url, config);
-    return response.data;
-  } catch (error) {
-    handleError(error);
-  }
+  instance.interceptors.response.use(
+    response => response,
+    error => {
+      if (error.response) {
+        return error.response;
+      } else {
+        return error.response;
+      }
+    },
+  );
+
+  return instance;
 };
 
-export const postRequest = async (url: string, data = {}) => {
-  try {
-    const response = await api.post(url, data);
-    return response.data;
-  } catch (error) {
-    handleError(error);
-  }
+export interface ApiResponse<T> {
+  status: number;
+  data: T | undefined;
+}
+
+const getRequest = async <T>(
+  api: AxiosInstance,
+  url: string,
+  params?: Record<string, any>,
+): Promise<ApiResponse<T>> => {
+  const config: AxiosRequestConfig =
+    params && Object.keys(params).length > 0 ? {params} : {};
+  const response: AxiosResponse<T> = await api.get(url, config);
+  return {
+    status: response.status,
+    data: response.data,
+  };
 };
 
-export const putRequest = async (url: string, data = {}) => {
-  try {
-    const response = await api.put(url, data);
-    return response.data;
-  } catch (error) {
-    handleError(error);
-  }
+const postRequest = async <T>(
+  api: AxiosInstance,
+  url: string,
+  data = {},
+): Promise<ApiResponse<T>> => {
+  const response: AxiosResponse<T> = await api.post(url, data);
+  return {
+    status: response.status,
+    data: response.data,
+  };
 };
 
-const handleError = (error: any) => {
-  if (error.response) {
-    const {status, data} = error.response;
-    console.error(`Error ${status}: ${data?.messages || error.message}`);
-    throw new Error(data?.messages || 'An error occurred');
-  } else if (error.request) {
-    console.error('No response received:', error.request);
-    throw new Error('No response from server. Please try again later.');
-  } else {
-    console.error('Error', error.message);
-    throw new Error(error.message);
-  }
+const putRequest = async <T>(
+  api: AxiosInstance,
+  url: string,
+  data = {},
+): Promise<ApiResponse<T>> => {
+  const response: AxiosResponse<T> = await api.put(url, data);
+  return {
+    status: response.status,
+    data: response.data,
+  };
 };
+
+export {createApiInstance, getRequest, postRequest, putRequest};

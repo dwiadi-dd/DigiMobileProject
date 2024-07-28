@@ -1,6 +1,6 @@
 import {IconName} from '@components/atom/Icon/Icon';
 
-export type ButtonProps = {
+export interface ButtonProps {
   size: 'small' | 'medium' | 'large';
   type: 'text-only' | 'icon-left' | 'icon-right' | 'icon-only';
   variant: 'primary' | 'outline' | 'tertiary' | 'link';
@@ -8,12 +8,12 @@ export type ButtonProps = {
   children?: React.ReactNode;
   iconName?: IconName;
   onPress?: () => void;
-};
+}
 
-export type PostItemProps = {
+export interface PostItemProps {
   avatar_url: string;
   name: string;
-  headline: string;
+  headline: string | null;
   created_at: string;
   post_header: string;
   post_content: string;
@@ -22,9 +22,9 @@ export type PostItemProps = {
   post_downvote: number;
   post_comment: number;
   post_retweet: number;
-};
+}
 
-export type TextFieldProps = {
+export interface TextFieldProps {
   state?: 'default' | 'positive' | 'negative' | 'disabled';
   type?: 'text' | 'password' | 'email' | 'number' | 'no-label';
   visible?: boolean;
@@ -35,12 +35,36 @@ export type TextFieldProps = {
   value?: string;
   onSubmitEditing?: ({nativeEvent}: {nativeEvent: any}) => void;
   isProtected?: boolean;
-};
+}
 
-export type IconProps = {
+export interface IconProps {
   focused: boolean;
-};
+}
 
-export type IndicatorProps = {
+export interface IndicatorProps {
   currentIndex: number;
-};
+}
+
+export interface CheckEmailReq {
+  email: string;
+}
+export interface CheckEmailRes {
+  status: boolean;
+  messages: boolean;
+}
+
+export interface LoginRes {
+  status: boolean;
+  messages: string;
+  user: {
+    access_token: string;
+    refresh_token: string;
+    is_verified: boolean;
+    expired_at: Date;
+  };
+}
+
+export interface LoginReq {
+  email: string;
+  password: string;
+}
