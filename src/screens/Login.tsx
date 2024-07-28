@@ -1,17 +1,20 @@
 import {
+  ActivityIndicator,
+  Alert,
   Image,
   SafeAreaView,
   StyleSheet,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {FC, useContext, useEffect, useState} from 'react';
+import React, {FC, useCallback, useContext, useEffect, useState} from 'react';
 import {Button, TextField} from '@components/molecules';
 import {Icon, Typography} from '@components/atom';
-import {NavigationProp} from '@react-navigation/native';
+import {CommonActions, NavigationProp} from '@react-navigation/native';
 import {AuthContext} from '@contexts/AuthContext';
 import SPACING from '@constant/spacing';
 import COLORS from '@constant/colors';
+import investlyServices from '@services/investlyServices';
 
 const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const {login} = useContext(AuthContext);
@@ -22,6 +25,7 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const [emailSuccess, setEmailSuccess] = useState(false);
   const [passwordError, setPasswordError] = useState('');
   const [isValid, setIsValid] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const validateEmail = (input: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -80,6 +84,23 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
       setPasswordError('Invalid email or password.');
     }
   };
+  const onLogin = useCallback(async () => {
+    setLoading(true);
+    const res = await investlyServices.login({email, password});
+    console.log('KOCK');
+    if (res?.status === 200) {
+      setLoading(false);
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'HomeTab'}],
+        }),
+      );
+    } else {
+      setLoading(false);
+      Alert.alert('Login failed', res?.data?.messages || 'An error occurred');
+    }
+  }, [email, password, navigation]);
 
   const handleLewati = () => {
     navigation.navigate('HomeTab');
@@ -153,9 +174,9 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
             type="text-only"
             variant="primary"
             size="medium"
-            disabled={!isValid}
-            onPress={handleLogin}>
-            Masuk
+            disabled={!isValid || loading}
+            onPress={onLogin}>
+            Masuk {loading && <ActivityIndicator />}
           </Button>
         </View>
 
