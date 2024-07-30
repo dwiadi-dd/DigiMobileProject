@@ -10,20 +10,6 @@ export interface ButtonProps {
   onPress?: () => void;
 }
 
-export interface PostItemProps {
-  avatar_url: string;
-  name: string;
-  headline: string | null;
-  created_at: string;
-  post_header: string;
-  post_content: string;
-  post_topic: string;
-  post_upvote: number;
-  post_downvote: number;
-  post_comment: number;
-  post_retweet: number;
-}
-
 export interface TextFieldProps {
   state?: 'default' | 'positive' | 'negative' | 'disabled';
   type?: 'text' | 'password' | 'email' | 'number' | 'no-label';
@@ -42,7 +28,8 @@ export interface IconProps {
 }
 
 export interface IndicatorProps {
-  currentIndex: number;
+  currentStep: Number;
+  totalSteps: Number;
 }
 
 export interface CheckEmailReq {
@@ -67,4 +54,84 @@ export interface LoginRes {
 export interface LoginReq {
   email: string;
   password: string;
+}
+
+//post Props
+export interface FeedItemProps {
+  id: string;
+  header: string;
+  content: string;
+  attachments: string[];
+  attachment_properties: AttachmentProperty[];
+  repost_post_id: string | null;
+  created_at: string;
+  is_upvoted: boolean;
+  is_downvoted: boolean;
+  is_reposted: boolean;
+  is_question_post: boolean;
+  is_owned: boolean;
+  total_comments: number;
+  upvotes: number;
+  reposts: number;
+  post_type: string;
+  time: string;
+  topic: Topic;
+  analysis: any;
+  parent_post: any;
+  user: User;
+  poll_question: any;
+}
+
+export interface AttachmentProperty {
+  name_display: string;
+  full_path: string;
+  size: number;
+  mime_type: string;
+}
+
+export interface Topic {
+  id: string;
+  label: string;
+}
+
+export interface User {
+  user_id: string;
+  name: string;
+  username: string;
+  profile_path: string;
+  profile_image_properties: any;
+  bio: string;
+  is_pro: boolean;
+  is_premium: boolean;
+  is_verified: boolean;
+  created_at: string;
+  total_followers: number;
+  total_following: number;
+  is_followed: boolean;
+  pro_profile: any;
+  calendly_url: any;
+  favorite_topics: any;
+  referral_code: any;
+  headline: string;
+  favorite_instruments: any;
+}
+
+export interface PostPropsRes {
+  status: boolean;
+  messages: string;
+  meta: Meta;
+  data?: FeedItemProps[];
+}
+
+export interface Meta {
+  per_page: number;
+  current_page: number;
+  last_page: number;
+  is_load_more: boolean;
+}
+
+export interface FeedsReq {
+  sort: string;
+  page: number;
+  size: number;
 }

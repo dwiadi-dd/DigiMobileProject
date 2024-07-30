@@ -12,6 +12,7 @@ import {NavigationProp} from '@react-navigation/native';
 import {AuthContext} from '@contexts/AuthContext';
 import SPACING from '@constant/spacing';
 import COLORS from '@constant/colors';
+import StepperIndicator from './components/StepIndicator';
 
 const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const {login} = useContext(AuthContext);
@@ -94,7 +95,7 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   };
 
   const handleLewati = () => {
-    navigation.navigate('HomeTab');
+    navigation.navigate('RegisterTwo');
   };
 
   const handleEmailChange = (text: string) => {
@@ -113,24 +114,87 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   useEffect(() => {
     setIsValid(Boolean(!emailError && !passwordError && email && password));
   }, [emailError, passwordError, email, password]);
+  const [currentStep, setCurrentStep] = useState(1);
+  const handleNext = () => {
+    if (currentStep < 3) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handleBack = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 1:
+        return (
+          <>
+            <TextField
+              label="Email"
+              placeholder="Masukan Email Kamu"
+              state={
+                emailError ? 'negative' : emailSuccess ? 'positive' : 'default'
+              }
+              message={emailError}
+              onChangeText={handleEmailChange}
+              value={email}
+            />
+            <TextField
+              type="password"
+              label="Password"
+              placeholder="Masukan Password Kamu"
+              state={passwordError ? 'negative' : 'default'}
+              message={passwordError}
+              onChangeText={handlePasswordChange}
+              value={password}
+            />
+            <TextField
+              type="password"
+              label="Konfirmasi Password"
+              placeholder="Masukan Konfirmasi Password"
+              state={confirmPasswordError ? 'negative' : 'default'}
+              message={confirmPasswordError}
+              onChangeText={handleConfirmPasswordChange}
+              value={confirmPassword}
+            />
+          </>
+        );
+      case 2:
+        return (
+          <>
+            <TextField label="Nama" placeholder="Masukan Nama Kamu" />
+            <TextField label="Username" placeholder="Masukan Username Kamu" />
+          </>
+        );
+      case 3:
+        return (
+          <Typography type="paragraph" size="medium">
+            Final step content here
+          </Typography>
+        );
+    }
+  };
 
   return (
     <SafeAreaView style={styles.viewContainer}>
       <View style={styles.headerContainer}>
         <View style={styles.headerSide}>
-          <TouchableOpacity>
+          <TouchableOpacity onPress={handleBack}>
             <Icon name="chevron-left" />
           </TouchableOpacity>
         </View>
         <View style={styles.headerMiddle}>
-          <Image source={require('../../assets/img/ic_investly.png')} />
+          <Image source={require('../../../assets/img/ic_investly.png')} />
         </View>
         <View style={styles.headerSide}>
           <Button
             type="text-only"
             variant="link"
             size="medium"
-            onPress={handleLewati}>
+            onPress={handleNext}>
             Masuk
           </Button>
         </View>
@@ -139,37 +203,9 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
         <Typography size="large" type="heading" style={styles.centerText}>
           Buat Akun
         </Typography>
-        <View style={styles.formContainer}>
-          <TextField
-            label="Email"
-            placeholder="Masukan Email Kamu"
-            state={
-              emailError ? 'negative' : emailSuccess ? 'positive' : 'default'
-            }
-            message={emailError}
-            onChangeText={handleEmailChange}
-            value={email}
-          />
-          <TextField
-            type="password"
-            label="Password"
-            placeholder="Masukan Password Kamu"
-            state={passwordError ? 'negative' : 'default'}
-            message={passwordError}
-            onChangeText={handlePasswordChange}
-            value={password}
-          />
-          <TextField
-            type="password"
-            label="Konfirmasi Password"
-            placeholder="Masukan Konfirmasi Password"
-            state={confirmPasswordError ? 'negative' : 'default'}
-            message={confirmPasswordError}
-            onChangeText={handleConfirmPasswordChange}
-            value={confirmPassword}
-          />
-        </View>
+        <View style={styles.formContainer}>{renderStepContent()}</View>
         <View style={styles.flex} />
+        <StepperIndicator currentStep={currentStep} totalSteps={3} />
         <Button
           type="text-only"
           variant="primary"
