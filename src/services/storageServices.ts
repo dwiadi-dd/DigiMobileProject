@@ -1,20 +1,21 @@
 import {MMKV} from 'react-native-mmkv';
 
-export const storageServices = new MMKV();
+const STORAGE_KEYS = {
+  IS_LOGGED_IN: 'IS_LOGGED_IN',
+};
 
-enum STORAGE_KEYS {
-  IS_LOGGED_IN = 'IS_LOGGED_IN',
+const storageservice = new MMKV();
+
+function login() {
+  storageservice.set(STORAGE_KEYS.IS_LOGGED_IN, true);
 }
-const login = () => {
-  storageServices.set(STORAGE_KEYS.IS_LOGGED_IN, true);
-};
 
-const isLoggedIn = () => {
-  storageServices.getBoolean(STORAGE_KEYS.IS_LOGGED_IN);
-};
+function isLoggedIn() {
+  return storageservice.getBoolean(STORAGE_KEYS.IS_LOGGED_IN);
+}
 
-const logout = () => {
-  storageServices.delete(STORAGE_KEYS.IS_LOGGED_IN);
-};
+function logout() {
+  storageservice.delete(STORAGE_KEYS.IS_LOGGED_IN);
+}
 
 export default {login, isLoggedIn, logout};

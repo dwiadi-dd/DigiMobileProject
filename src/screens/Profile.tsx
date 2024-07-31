@@ -1,10 +1,13 @@
 import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
 import React, {FC, memo} from 'react';
-import {Typography} from '@components/atom';
 import COLORS from '@constant/colors';
 import SPACING from '@constant/spacing';
+import {Button} from '@components/molecules';
+import {storageServices} from '@services/index';
+import {CommonActions, useNavigation} from '@react-navigation/native';
 
 const Profile: FC = () => {
+  const navigation = useNavigation();
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.itemContainer}>
@@ -12,9 +15,21 @@ const Profile: FC = () => {
           source={require('../../assets/img/invest.png')}
           style={styles.image}
         />
-        <Typography type="heading" size="xlarge">
-          Coming Soon
-        </Typography>
+        <Button
+          size="medium"
+          variant="primary"
+          type="text-only"
+          onPress={() => {
+            storageServices.logout();
+            navigation.dispatch(
+              CommonActions.reset({
+                index: 0,
+                routes: [{name: 'OnBoarding', params: {isLogin: false}}],
+              }),
+            );
+          }}>
+          Logout
+        </Button>
       </View>
     </SafeAreaView>
   );

@@ -7,19 +7,18 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {FC, useCallback, useContext, useEffect, useState} from 'react';
+import React, {FC, useCallback, useEffect, useState} from 'react';
 import {Button, TextField} from '@components/molecules';
 import {Icon, Typography} from '@components/atom';
 import {CommonActions, NavigationProp} from '@react-navigation/native';
-import {AuthContext} from '@contexts/AuthContext';
 import SPACING from '@constant/spacing';
 import COLORS from '@constant/colors';
 import investlyServices from '@services/investlyServices';
-
+import storageServices from '@services/storageServices';
+import * as Keychain from 'react-native-keychain';
 const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
-  const {login} = useContext(AuthContext);
-
   const [email, setEmail] = useState('');
+
   const [password, setPassword] = useState('');
   const [emailError, setEmailError] = useState('');
   const [emailSuccess, setEmailSuccess] = useState(false);
@@ -72,24 +71,34 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
     }
   };
 
-  const handleLogin = () => {
-    if (
-      email.toLowerCase() === 'adibangkit@test.app' &&
-      password === 'TestApp123!'
-    ) {
-      navigation.navigate('HomeTab');
-      login();
-    } else {
-      setEmailError('Invalid email or password.');
-      setPasswordError('Invalid email or password.');
+  const saveCredentialsToSecureStorage = useCallback(async () => {
+    try {
+      await Keychain.setGenericPassword(email, password, {
+        accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY,
+      });
+    } catch (error) {
+      console.error('Error saving credentials to secure storage:', error);
     }
-  };
+  }, [email, password]);
+
+  const loginWithFingerPrint = useCallback(async () => {
+    try {
+      const credentials = await Keychain.getGenericPassword();
+      if (credentials) {
+        setEmail(credentials.username);
+        setPassword(credentials.password);
+      }
+    } catch (error) {
+      console.error('Error getting credentials from secure storage:', error);
+    }
+  }, []);
   const onLogin = useCallback(async () => {
     setLoading(true);
     const res = await investlyServices.login({email, password});
-    console.log('KOCK');
     if (res?.status === 200) {
+      saveCredentialsToSecureStorage();
       setLoading(false);
+      storageServices.login();
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
@@ -105,7 +114,9 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const handleLewati = () => {
     navigation.navigate('HomeTab');
   };
-
+  const handleDaftar = () => {
+    navigation.navigate('Register');
+  };
   const handleEmailChange = (text: string) => {
     setEmail(text);
     validateEmail(text);
@@ -120,6 +131,17 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
     setIsValid(Boolean(!emailError && !passwordError && email && password));
   }, [emailError, passwordError, email, password]);
 
+  useEffect(() => {
+    const isLoggedIn = storageServices.isLoggedIn();
+    if (isLoggedIn) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'HomeTab', params: {isLogin: true}}],
+        }),
+      );
+    }
+  }, [navigation]);
   return (
     <SafeAreaView style={styles.viewContainer}>
       <View style={styles.headerContainer}>
@@ -166,8 +188,12 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
             value={password}
           />
           <View style={styles.helperContainer}>
-            <Button type="text-only" variant="link" size="small">
-              Lupa Password
+            <Button
+              type="text-only"
+              variant="link"
+              size="small"
+              onPress={loginWithFingerPrint}>
+              Login with finger
             </Button>
           </View>
           <Button
@@ -185,7 +211,7 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
           type="text-only"
           variant="outline"
           size="medium"
-          onPress={handleLogin}>
+          onPress={handleDaftar}>
           Daftar
         </Button>
       </View>
