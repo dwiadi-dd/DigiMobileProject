@@ -7,6 +7,8 @@ import {
   LoginRes,
   PostDetailReq,
   PostPropsRes,
+  RegisterReq,
+  RegisterRes,
   TopicsMasterPropsRes,
 } from '@utils/props';
 import {
@@ -40,6 +42,12 @@ export const login = async (
   return await postRequest(api, '/auth/v2/login', data);
 };
 
+export const register = async (
+  data: RegisterReq,
+): Promise<ApiResponse<RegisterRes | undefined>> => {
+  return await postRequest(api, '/auth/v4/register', data);
+};
+
 export const fetchFeed = async (
   data: FeedsReq,
 ): Promise<ApiResponse<PostPropsRes | undefined>> => {
@@ -54,6 +62,7 @@ export const fetchPostById = async (
 ): Promise<ApiResponse<PostPropsRes | undefined>> => {
   return await getRequest(api, `/social/v1/public/post/${data.post_id}`, data);
 };
+
 export const fetchTopics = async (): Promise<
   ApiResponse<TopicsMasterPropsRes | undefined>
 > => {

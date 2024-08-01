@@ -32,10 +32,19 @@ export interface IndicatorProps {
   totalSteps: Number;
 }
 
+export interface OnboardIndicatorProps {
+  currentIndex: Number;
+}
+
 export interface CheckEmailReq {
   email: string;
 }
-export interface CheckEmailRes {
+
+export interface CheckUsernameReq {
+  username: string;
+}
+
+export interface CheckValidRes {
   status: boolean;
   messages: boolean;
 }
@@ -134,4 +143,46 @@ export interface FeedsReq {
   sort: string;
   page: number;
   size: number;
+}
+
+export interface TopicsMasterPropsRes {
+  status: boolean;
+  messages: string;
+  data: TopicMaster[];
+}
+
+export interface TopicMaster {
+  id: string;
+  file: AttachmentProperty;
+  label: string;
+}
+
+export interface AttachmentProperty {
+  name_display: string;
+  full_path: string;
+  size: number;
+  mime_type: string;
+}
+
+export interface PostDetailReq {
+  post_id: string;
+}
+
+export interface RegisterReq {
+  email: string;
+  password: string;
+  favorite_topic_ids: string[];
+  username: string;
+  name: string;
+}
+
+export interface RegisterRes {
+  status: boolean;
+  messages: string;
+  data: {
+    access_token: string;
+    refresh_token: string;
+    is_verified: boolean;
+    expired_at: string;
+  };
 }
