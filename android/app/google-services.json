@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "610055248482",
+    "project_id": "digi-mobile-project",
+    "storage_bucket": "digi-mobile-project.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:610055248482:android:e9c874dc0b280dd83acf3b",
+        "android_client_info": {
+          "package_name": "com.digimobileproject"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC3zPZt2o8FanJEOA44fat8MbAT6CqgrF0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
