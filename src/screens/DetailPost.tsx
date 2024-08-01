@@ -5,11 +5,11 @@ import {TextField} from '@components/molecules';
 
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import PostItem from '@components/organism/PostItem';
-import {PostItemProps} from '@utils/props';
 import {Icon, Typography} from '@components/atom';
+import {FeedItemProps} from '@utils/props';
 
 type DetailPostRouteProp = RouteProp<
-  {DetailPost: {post: PostItemProps}},
+  {DetailPost: {post: FeedItemProps}},
   'DetailPost'
 >;
 

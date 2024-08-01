@@ -17,6 +17,7 @@ type TyphographyProps = {
   color?: TextStyle;
   style?: StyleProp<TextStyle>;
   children: React.ReactNode;
+  numberOfLines?: number;
 };
 
 type StyleMap = {
@@ -26,11 +27,12 @@ type StyleMap = {
 };
 
 export default function Typhography({
-  size,
-  type,
+  size = 'medium',
+  type = 'paragraph',
   color = {color: COLORS.neutral700},
   style,
   children,
+  numberOfLines,
 }: TyphographyProps) {
   const styleMap: StyleMap = {
     heading: {
@@ -60,7 +62,9 @@ export default function Typhography({
 
   return (
     <View>
-      <Text style={textStyle}>{children}</Text>
+      <Text style={textStyle} numberOfLines={numberOfLines}>
+        {children}
+      </Text>
     </View>
   );
 }
