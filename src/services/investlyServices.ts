@@ -18,7 +18,8 @@ import {
   postRequest,
 } from './httprequester';
 
-const api = createApiInstance('https://develop.investly.id/api');
+const apiDev = createApiInstance('https://develop.investly.id/api');
+const api = createApiInstance('https://api.investly.id/api');
 
 export const checkEmail = async (
   data: CheckEmailReq,
@@ -57,6 +58,16 @@ export const fetchFeed = async (
     data,
   );
 };
+
+export const fetchFeedDev = async (
+  data: FeedsReq,
+): Promise<ApiResponse<PostPropsRes | undefined>> => {
+  return await getRequest(
+    apiDev,
+    `/social/v2/feed?sort_by=${data.sort}&page=${data.page}&perpage=${data.size}`,
+    data,
+  );
+};
 export const fetchPostById = async (
   data: PostDetailReq,
 ): Promise<ApiResponse<PostPropsRes | undefined>> => {
@@ -74,4 +85,5 @@ export default {
   login,
   fetchFeed,
   fetchTopics,
+  fetchFeedDev,
 };
