@@ -1,48 +1,78 @@
 import {
+  Alert,
   SafeAreaView,
   StyleSheet,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {FC, memo, useState} from 'react';
+import React, {FC, memo, useCallback, useEffect, useState} from 'react';
 import COLORS from '@constant/colors';
-import {Button, TextField} from '@components/molecules';
+import {Button} from '@components/molecules';
 import {Icon, Typography} from '@components/atom';
 import {useNavigation} from '@react-navigation/native';
 import {getTypography} from '@components/atom/Typhography';
-import {usePosts} from '@contexts/PostContext';
-import {PostItemProps} from '@utils/props';
+import {TopicsMasterPropsRes} from '@utils/props';
+import investlyServices from '@services/investlyServices';
+import {Picker} from '@react-native-picker/picker';
+import SPACING from '@constant/spacing';
+import FONT_SIZE from '@constant/fontSize';
+import {onDisplayNotification} from '@utils/helper';
 
 const CreatePost: FC = () => {
   const navigation = useNavigation();
-  const [topic, setTopic] = useState('');
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const {addPost} = usePosts();
+  const [topics, setTopics] = useState<
+    TopicsMasterPropsRes | [] | {loading: boolean}
+  >({
+    data: [],
+    loading: false,
+  });
+  const [formData, setFormData] = useState({
+    content: '',
+    header: '',
+    topic_id: '',
+    is_anonim: false,
+  });
 
-  const handlePost = () => {
-    const post: PostItemProps = {
-      avatar_url:
-        'https://lwfiles.mycourse.app/656ef73b8e59fa6dfcddbe98-public/3073ed5d42a0e38174e311a1a0cb0800.png',
-      name: 'Adi Bangkit',
-      headline: 'Mobile Engineer Expert',
-      created_at: new Date().toISOString(),
-      post_header: title,
-      post_content: description,
-      post_topic: topic,
-      post_upvote: 0,
-      post_downvote: 0,
-      post_comment: 0,
-      post_retweet: 0,
-    };
-
-    addPost(post);
-    navigation.goBack();
-  };
+  const [loading, setLoading] = useState(false);
   const handleBack = () => {
     navigation.goBack();
   };
+  const fetcMasterTopics = useCallback(async () => {
+    setTopics({data: [], loading: true});
+    const res = await investlyServices.fetchTopics();
+    if (res?.status === 200) {
+      setTopics({data: res?.data?.data, loading: false});
+    } else {
+      setTopics({data: [], loading: false});
+      Alert.alert('Login failed', res?.data?.messages || 'An error occurred');
+    }
+  }, []);
+  const handlePost = useCallback(async () => {
+    setLoading(true);
+    // console.log(formData);
+    const res = await investlyServices.createPost(formData);
+    if (res?.status === 200) {
+      onDisplayNotification({
+        title: 'Post berhasil!!!!',
+        body: 'post ditamhabkan',
+        subtitle: 'success',
+      });
+      setLoading(false);
+      navigation.goBack();
+    } else {
+      setLoading(false);
+      Alert.alert(
+        'Post data failded',
+        res?.data?.messages || 'An error occurred',
+      );
+    }
+  }, [formData]);
+
+  useEffect(() => {
+    fetcMasterTopics();
+  }, [fetcMasterTopics]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
@@ -56,36 +86,57 @@ const CreatePost: FC = () => {
             type="heading"
             size="large"
             style={{color: COLORS.neutral700}}>
-            Create
+            Buat
           </Typography>
         </View>
         <Button
           type="text-only"
           variant="primary"
           size="medium"
-          disabled={topic && title && description ? false : true}
+          disabled={
+            formData.content === '' ||
+            formData.header === '' ||
+            formData.topic_id === ''
+          }
           onPress={handlePost}>
           Post
         </Button>
       </View>
       <View style={styles.contentHolder}>
-        <TextField
-          placeholder="Topic"
-          value={topic}
-          onChangeText={setTopic}
-          type="no-label"
-        />
+        {topics?.loading ? (
+          <Typography type="paragraph" size="medium">
+            Loading topics...
+          </Typography>
+        ) : (
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={formData.topic_id}
+              style={styles.picker}
+              onValueChange={itemValue =>
+                setFormData({...formData, topic_id: itemValue})
+              }>
+              <Picker.Item label="Topic" value="" />
+              {topics?.data?.map(topic => (
+                <Picker.Item
+                  key={topic?.id}
+                  label={topic?.label}
+                  value={topic?.id}
+                />
+              ))}
+            </Picker>
+          </View>
+        )}
         <TextInput
           placeholder="Judul"
-          value={title}
-          onChangeText={setTitle}
+          value={formData?.header}
+          onChangeText={e => setFormData({...formData, header: e})}
           placeholderTextColor={COLORS.neutral400}
           style={getTypography('heading', 'xlarge')}
         />
         <TextInput
           placeholder="Deskripsi"
-          value={description}
-          onChangeText={setDescription}
+          value={formData?.content}
+          onChangeText={e => setFormData({...formData, content: e})}
           placeholderTextColor={COLORS.neutral400}
           style={getTypography('paragraph', 'medium')}
           multiline
@@ -138,5 +189,23 @@ const styles = StyleSheet.create({
   iconButton: {
     borderWidth: 0,
     padding: 8,
+  },
+  pickerContainer: {
+    borderWidth: 1,
+    borderRadius: 12,
+    borderColor: COLORS.neutral300,
+    paddingHorizontal: SPACING.md,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    backgroundColor: COLORS.neutral200,
+    overflow: 'hidden', // This ensures the Picker doesn't overflow the rounded corners
+  },
+  picker: {
+    width: '100%',
+    color: COLORS.neutral700,
+    fontFamily: 'Inter-Bold',
+    fontWeight: 'bold',
+    fontSize: FONT_SIZE.md,
   },
 });

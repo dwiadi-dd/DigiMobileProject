@@ -27,7 +27,6 @@ export interface ApiResponse<T> {
   status: number;
   data: T | undefined;
 }
-
 const getRequest = async <T>(
   api: AxiosInstance,
   url: string,
@@ -64,6 +63,34 @@ const postRequest = async <T>(
   };
 };
 
+const postRequestFormData = async <T>(
+  api: AxiosInstance,
+  url: string,
+  data = {},
+  requiresAuth: boolean = false,
+): Promise<ApiResponse<T>> => {
+  const config: AxiosRequestConfig = {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  };
+
+  if (requiresAuth) {
+    const token = storageService.getLoginData().accessToken;
+    config.headers = {...config.headers, Authorization: `Bearer ${token}`};
+  }
+
+  const formData = new FormData();
+  Object.keys(data).forEach(key => {
+    formData.append(key, data[key]);
+  });
+
+  const response: AxiosResponse<T> = await api.post(url, formData, config);
+  return {
+    status: response.status,
+    data: response.data,
+  };
+};
 const putRequest = async <T>(
   api: AxiosInstance,
   url: string,
@@ -82,4 +109,10 @@ const putRequest = async <T>(
   };
 };
 
-export {createApiInstance, getRequest, postRequest, putRequest};
+export {
+  createApiInstance,
+  getRequest,
+  postRequest,
+  putRequest,
+  postRequestFormData,
+};

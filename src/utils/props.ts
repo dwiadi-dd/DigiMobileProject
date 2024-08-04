@@ -186,3 +186,10 @@ export interface RegisterRes {
     expired_at: string;
   };
 }
+
+export interface CreatePostReq {
+  content: string;
+  header: string;
+  topic_id: string;
+  is_anonim: boolean;
+}

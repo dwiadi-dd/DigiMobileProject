@@ -2,6 +2,7 @@ import {
   CheckEmailReq,
   CheckUsernameReq,
   CheckValidRes,
+  CreatePostReq,
   FeedsReq,
   LoginReq,
   LoginRes,
@@ -16,6 +17,7 @@ import {
   createApiInstance,
   getRequest,
   postRequest,
+  postRequestFormData,
 } from './httprequester';
 
 const apiDev = createApiInstance('https://develop.investly.id/api');
@@ -76,15 +78,17 @@ export const fetchPostById = async (
 export const fetchTopics = async (): Promise<
   ApiResponse<TopicsMasterPropsRes | undefined>
 > => {
-  return await getRequest(api, '/social/v1/public/masterdata/topic');
+  return await getRequest(apiDev, '/social/v1/public/masterdata/topic');
 };
 
-export const createPost = async (): Promise<
-  ApiResponse<TopicsMasterPropsRes | undefined>
-> => {
-  return await postRequest(api, '/social/v2/post');
+export const createPost = async (
+  data: CreatePostReq,
+): Promise<ApiResponse<RegisterRes | undefined>> => {
+  return await postRequestFormData(apiDev, '/social/v2/post', data, true);
 };
+
 export default {
+  createPost,
   checkEmail,
   checkUsername,
   login,
