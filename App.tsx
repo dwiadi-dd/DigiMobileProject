@@ -5,25 +5,20 @@
  * @format
  */
 
-import React, {FC, useEffect} from 'react';
+import React, {FC} from 'react';
 import {AuthProvider} from '@contexts/AuthContext';
 import {PostsProvider} from '@contexts/PostContext';
 import MainNavigation from '@navigations/index';
-import notifee, {EventType} from '@notifee/react-native';
+import messaging from '@react-native-firebase/messaging';
+import notifee from '@notifee/react-native';
 
+async function onMessageReceived(message: any) {
+  notifee.displayNotification(JSON.parse(message.data.notifee));
+}
+
+messaging().onMessage(onMessageReceived);
+messaging().setBackgroundMessageHandler(onMessageReceived);
 const App: FC = () => {
-  useEffect(() => {
-    return notifee.onForegroundEvent(({type, detail}) => {
-      switch (type) {
-        case EventType.DISMISSED:
-          console.log('User dismissed notification', detail.notification);
-          break;
-        case EventType.PRESS:
-          console.log('User pressed notification', detail.notification);
-          break;
-      }
-    });
-  }, []);
   return (
     <PostsProvider>
       <AuthProvider>
