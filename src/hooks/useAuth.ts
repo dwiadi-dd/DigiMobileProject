@@ -1,13 +1,12 @@
-import {useContext} from 'react';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {AuthContext} from '@contexts/AuthContext';
+import storageServices from '@services/storageServices';
 
 const useAuth = <T extends any[]>(action: (...args: T) => void) => {
-  const {isAuthenticated} = useContext(AuthContext);
+  const isLoggedIn = storageServices.getLoginData().isLoggedIn;
   const navigation = useNavigation<NavigationProp<any>>();
 
   return (...args: T) => {
-    if (isAuthenticated) {
+    if (isLoggedIn) {
       action(...args);
     } else {
       navigation.navigate('Login');
