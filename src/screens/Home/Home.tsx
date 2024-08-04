@@ -1,12 +1,10 @@
+import React from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {useContext} from 'react';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {LoginAlert, TextField} from '@components/molecules';
 import COLORS from '@constant/colors';
 import {Icon, Typography} from '@components/atom';
-
 import {NavigationProp, useNavigation} from '@react-navigation/native';
-import {AuthContext} from '@contexts/AuthContext';
 import Avatar from '@components/atom/Avatar';
 import Feed from './components/Feed';
 import useAuth from '@hooks/useAuth';
@@ -18,9 +16,9 @@ const TopTab = createMaterialTopTabNavigator();
 const Home = () => {
   const isLoggedIn = storageServices.getLoginData().isLoggedIn;
   const navigation = useNavigation<NavigationProp<any>>();
-  const userAvatar =
-    isLoggedIn &&
-    'https://lwfiles.mycourse.app/656ef73b8e59fa6dfcddbe98-public/3073ed5d42a0e38174e311a1a0cb0800.png';
+  const userAvatar = isLoggedIn
+    ? 'https://lwfiles.mycourse.app/656ef73b8e59fa6dfcddbe98-public/3073ed5d42a0e38174e311a1a0cb0800.png'
+    : undefined;
 
   const handleCreate = useAuth(() => {
     navigation.navigate('Create Post');

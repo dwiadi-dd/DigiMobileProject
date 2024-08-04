@@ -26,7 +26,7 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const [passwordError, setPasswordError] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [isfingerPrint, setIsFingerPrint] = useState(false);
+  const [_, setIsFingerPrint] = useState(false);
   const [isFingerprintFF, setIsFingerprintFF] = useState(false);
 
   const validateEmail = (input: string) => {
@@ -100,10 +100,10 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const onLogin = useCallback(async () => {
     setLoading(true);
     const res = await investlyServices.login({email, password});
-    if (res?.status === 200) {
+    if (res?.status === 200 && res.data?.data) {
       saveCredentialsToSecureStorage();
+      storageServices.setLoginData(res.data.data);
       setLoading(false);
-      storageServices.setLoginData(res?.data?.data);
       navigation.dispatch(
         CommonActions.reset({
           index: 0,

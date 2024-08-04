@@ -3,6 +3,7 @@ import {
   SafeAreaView,
   StyleSheet,
   TextInput,
+  ToastAndroid,
   TouchableOpacity,
   View,
 } from 'react-native';
@@ -17,7 +18,6 @@ import investlyServices from '@services/investlyServices';
 import {Picker} from '@react-native-picker/picker';
 import SPACING from '@constant/spacing';
 import FONT_SIZE from '@constant/fontSize';
-import {onDisplayNotification} from '@utils/helper';
 
 const CreatePost: FC = () => {
   const navigation = useNavigation();
@@ -53,11 +53,7 @@ const CreatePost: FC = () => {
     // console.log(formData);
     const res = await investlyServices.createPost(formData);
     if (res?.status === 200) {
-      onDisplayNotification({
-        title: 'Post berhasil!!!!',
-        body: 'post ditamhabkan',
-        subtitle: 'success',
-      });
+      ToastAndroid.show('Post berhasil', ToastAndroid.SHORT);
       setLoading(false);
       navigation.goBack();
     } else {
@@ -96,7 +92,8 @@ const CreatePost: FC = () => {
           disabled={
             formData.content === '' ||
             formData.header === '' ||
-            formData.topic_id === ''
+            formData.topic_id === '' ||
+            loading
           }
           onPress={handlePost}>
           Post

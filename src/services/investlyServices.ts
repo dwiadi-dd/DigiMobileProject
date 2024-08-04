@@ -11,6 +11,7 @@ import {
   RegisterReq,
   RegisterRes,
   TopicsMasterPropsRes,
+  UpvoteReq,
 } from '@utils/props';
 import {
   ApiResponse,
@@ -44,9 +45,7 @@ export const register = async (
 ): Promise<ApiResponse<RegisterRes | undefined>> => {
   return await postRequest(apiDev, '/auth/v4/register', data);
 };
-export const login = async (
-  data: LoginReq,
-): Promise<ApiResponse<LoginRes | undefined>> => {
+export const login = async (data: LoginReq): Promise<ApiResponse<LoginRes>> => {
   return await postRequest(apiDev, '/auth/v2/login', data);
 };
 
@@ -87,6 +86,17 @@ export const createPost = async (
   return await postRequestFormData(apiDev, '/social/v2/post', data, true);
 };
 
+export const upvotePost = async (
+  data: UpvoteReq,
+): Promise<ApiResponse<RegisterRes | undefined>> => {
+  return await postRequestFormData(
+    apiDev,
+    `/social/v2/post/${data?.post_id}/up-vote`,
+    data,
+    true,
+  );
+};
+
 export default {
   createPost,
   checkEmail,
@@ -96,4 +106,5 @@ export default {
   fetchFeed,
   fetchTopics,
   fetchFeedDev,
+  upvotePost,
 };

@@ -11,6 +11,7 @@
           "@utils": "./src/utils",
           "@contexts": "./src/contexts",
           "@hooks": "./src/hooks",
+          "@stores": "./src/stores",
           "@navigations": "./src/navigations",
           "@services": "./src/services"
         }

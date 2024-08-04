@@ -6,21 +6,32 @@ import {TextField} from '@components/molecules';
 import {RouteProp, useNavigation, useRoute} from '@react-navigation/native';
 import PostItem from '@components/organism/PostItem';
 import {Icon, Typography} from '@components/atom';
-import {FeedItemProps} from '@utils/props';
+import {useFeedStore} from '@stores/feedStore';
 
 type DetailPostRouteProp = RouteProp<
-  {DetailPost: {post: FeedItemProps}},
+  {DetailPost: {postId: string}},
   'DetailPost'
 >;
 
 export const DetailPost = () => {
-  const route = useRoute<DetailPostRouteProp>();
   const navigation = useNavigation();
+  const route = useRoute<DetailPostRouteProp>();
+  const {postId} = route.params;
 
-  const {post} = route.params;
+  const {getPostById} = useFeedStore();
+  const post = getPostById(postId);
   const handleBack = () => {
     navigation.goBack();
   };
+  if (!post) {
+    return (
+      <View>
+        <Typography type="heading" size="medium">
+          Post not found
+        </Typography>
+      </View>
+    );
+  }
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>

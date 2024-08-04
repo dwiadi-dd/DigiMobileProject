@@ -10,7 +10,8 @@
       "@contexts/*": ["contexts/*"],
       "@hooks/*": ["hooks/*"],
       "@navigations/*": ["navigations/*"],
-      "@services/*": ["services/*"]
+      "@services/*": ["services/*"],
+      "@stores/*": ["stores/*"]
     }
   }
 }

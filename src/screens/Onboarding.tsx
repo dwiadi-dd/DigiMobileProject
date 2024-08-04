@@ -48,6 +48,7 @@ const Onboarding = ({navigation}: {navigation: NavigationProp<any>}) => {
       }
     },
   ).current;
+
   useEffect(() => {
     const isLoggedIn = storageServices.getLoginData().isLoggedIn;
     if (isLoggedIn) {

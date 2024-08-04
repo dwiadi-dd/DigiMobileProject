@@ -6,8 +6,13 @@ import {HomeIcon, ProfileIcon} from './IconBar';
 import {TouchableOpacity} from 'react-native';
 import useAuth from '@hooks/useAuth';
 import {HomeTopBar} from '@components/molecules';
+import {NavigationProp, useNavigation} from '@react-navigation/native';
 
-const BottomTab = createBottomTabNavigator();
+export type RootStackParamList = {
+  Home: undefined;
+  Profile: undefined;
+};
+const BottomTab = createBottomTabNavigator<RootStackParamList>();
 const renderHomeIcon = ({focused}: {focused: boolean}) => (
   <HomeIcon focused={focused} />
 );
@@ -44,7 +49,9 @@ export const HomeTab = () => {
 };
 
 const ProfileTabBarButton = ({...props}) => {
-  const handleProfilePress = useAuth(() => {});
-
-  return <TouchableOpacity {...props} />;
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const handleProfilePress = useAuth(() => {
+    navigation.navigate('Profile');
+  });
+  return <TouchableOpacity {...props} onPress={handleProfilePress} />;
 };

@@ -13,104 +13,46 @@ import PostItem from '@components/organism/PostItem';
 import useAuth from '@hooks/useAuth';
 import SPACING from '@constant/spacing';
 import {SkeletonPostItem} from '@components/molecules';
-import investlyServices from '@services/investlyServices';
-import {FeedItemProps} from '@utils/props';
-
-interface FeedData {
-  type: string;
-  feeds: FeedItemProps[];
-}
+import {useFeedStore} from '@stores/feedStore';
 
 const Feed = ({sortBy}: {sortBy: string}) => {
   const navigation = useNavigation<NavigationProp<any>>();
-  const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState<number>(1);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [data, setData] = useState<FeedData[]>([]);
+
+  const {feedData, loading, error, fetchFeed} = useFeedStore();
 
   const handleDetail = useAuth(
     useCallback(
-      (post: FeedItemProps) => {
-        navigation.navigate('Post', {post});
+      (postId: string) => {
+        navigation.navigate('Post', {postId});
       },
       [navigation],
     ),
   );
 
-  const fetchFeed = useCallback(
-    async (pageParams: number) => {
-      setLoading(true);
-      try {
-        let res;
-        if (sortBy === 'engagement') {
-          res = await investlyServices.fetchFeed({
-            sort: sortBy,
-            page: pageParams,
-            size: 10,
-          });
-        } else if (sortBy === 'created_at') {
-          res = await investlyServices.fetchFeedDev({
-            sort: sortBy,
-            page: pageParams,
-            size: 10,
-          });
-        }
-        if (res?.status === 200) {
-          setData(prevData => {
-            const existingDataIndex = prevData.findIndex(
-              item => item.type === sortBy,
-            );
-            const newFeeds = res?.data?.data ?? [];
-
-            if (existingDataIndex !== -1) {
-              // Update existing data
-              const updatedData = [...prevData];
-              updatedData[existingDataIndex] = {
-                ...updatedData[existingDataIndex],
-                feeds:
-                  pageParams === 1
-                    ? newFeeds
-                    : [...updatedData[existingDataIndex].feeds, ...newFeeds],
-              };
-              return updatedData;
-            } else {
-              // Add new data
-              return [...prevData, {type: sortBy, feeds: newFeeds}];
-            }
-          });
-        } else {
-          Alert.alert(
-            'Fetch failed',
-            res?.data?.messages || 'An error occurred',
-          );
-        }
-      } catch (error) {
-        Alert.alert('Error', 'An error occurred while fetching data');
-      } finally {
-        setLoading(false);
-      }
-    },
-    [sortBy],
-  );
-
   const onRefresh = useCallback(() => {
-    setRefreshing(true);
     setPage(1);
-    fetchFeed(1).finally(() => setRefreshing(false));
-  }, [fetchFeed]);
+    fetchFeed(sortBy, 1);
+  }, [fetchFeed, sortBy]);
 
   useEffect(() => {
-    fetchFeed(page);
-  }, [page, fetchFeed]);
+    fetchFeed(sortBy, page);
+  }, [page, sortBy, fetchFeed]);
+
+  useEffect(() => {
+    if (error) {
+      Alert.alert('Error', error);
+    }
+  }, [error]);
 
   const onEndReach = useCallback(() => {
-    const currentFeeds = data.find(item => item.type === sortBy)?.feeds;
-    if (currentFeeds && currentFeeds.length > 0) {
+    const currentFeeds = feedData[sortBy] || [];
+    if (currentFeeds.length > 0 && !loading) {
       setPage(prevPage => prevPage + 1);
     }
-  }, [data, sortBy]);
+  }, [feedData, sortBy, loading]);
 
-  const currentFeedData = data.find(item => item.type === sortBy)?.feeds || [];
+  const currentFeedData = feedData[sortBy] || [];
 
   const Footer = (
     <View style={styles.footerContainer}>
@@ -127,14 +69,14 @@ const Feed = ({sortBy}: {sortBy: string}) => {
         loading && index >= currentFeedData.length - 10 ? (
           <SkeletonPostItem key={index} />
         ) : (
-          <TouchableOpacity onPress={() => handleDetail(item)}>
+          <TouchableOpacity onPress={() => handleDetail(item.id)}>
             <PostItem post={item} />
           </TouchableOpacity>
         )
       }
       keyExtractor={(item, index) => index.toString()}
       refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        <RefreshControl refreshing={loading} onRefresh={onRefresh} />
       }
       onEndReached={onEndReach}
       onEndReachedThreshold={0.5}

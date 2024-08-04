@@ -52,11 +52,11 @@ export interface CheckValidRes {
 export interface LoginRes {
   status: boolean;
   messages: string;
-  user: {
+  data: {
     access_token: string;
     refresh_token: string;
     is_verified: boolean;
-    expired_at: Date;
+    expired_at: string;
   };
 }
 
@@ -192,4 +192,8 @@ export interface CreatePostReq {
   header: string;
   topic_id: string;
   is_anonim: boolean;
+}
+
+export interface UpvoteReq {
+  post_id: string;
 }

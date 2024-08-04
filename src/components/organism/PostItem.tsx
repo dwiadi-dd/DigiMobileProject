@@ -7,10 +7,17 @@ import COLORS from '@constant/colors';
 import {formatTimeAgo} from '@utils/helper';
 import {Label} from '@components/molecules';
 import {FeedItemProps} from '@utils/props';
+import {useFeedStore} from '@stores/feedStore';
 
 export const PostItem = ({post}: {post: FeedItemProps}) => {
   const [isExpanded, setIsExpanded] = useState(false);
+  const {onPressUpvote} = useFeedStore();
 
+  const handleUpvote = async () => {
+    if (!post.is_upvoted) {
+      await onPressUpvote(post.id);
+    }
+  };
   const toggleReadMore = () => {
     setIsExpanded(!isExpanded);
   };
@@ -77,7 +84,7 @@ export const PostItem = ({post}: {post: FeedItemProps}) => {
       </Label>
       <View style={styles.footer}>
         <View style={styles.voteContainer}>
-          <TouchableOpacity style={styles.voteButton}>
+          <TouchableOpacity style={styles.voteButton} onPress={handleUpvote}>
             <Icon
               width={16}
               height={16}

@@ -35,7 +35,7 @@ export const formatTimeAgo = (date: Date) => {
   if (minutes < 60) {
     return `${minutes} menit yang lalu`;
   } else if (hours < 24) {
-    return `${hours} hari yang lalu`;
+    return `${hours} jam yang lalu`;
   } else if (days === 1) {
     return 'Kemarin';
   } else {
