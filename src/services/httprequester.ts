@@ -1,4 +1,5 @@
 import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
+import storageService from './storageServices'; // Import your storage service
 
 const createApiInstance = (baseURL: string): AxiosInstance => {
   const instance = axios.create({
@@ -31,9 +32,13 @@ const getRequest = async <T>(
   api: AxiosInstance,
   url: string,
   params?: Record<string, any>,
+  requiresAuth: boolean = false,
 ): Promise<ApiResponse<T>> => {
-  const config: AxiosRequestConfig =
-    params && Object.keys(params).length > 0 ? {params} : {};
+  const config: AxiosRequestConfig = params ? {params} : {};
+  if (requiresAuth) {
+    const token = storageService.getLoginData().accessToken;
+    config.headers = {...config.headers, Authorization: `Bearer ${token}`};
+  }
   const response: AxiosResponse<T> = await api.get(url, config);
   return {
     status: response.status,
@@ -45,8 +50,14 @@ const postRequest = async <T>(
   api: AxiosInstance,
   url: string,
   data = {},
+  requiresAuth: boolean = false,
 ): Promise<ApiResponse<T>> => {
-  const response: AxiosResponse<T> = await api.post(url, data);
+  const config: AxiosRequestConfig = {};
+  if (requiresAuth) {
+    const token = storageService.getLoginData().accessToken;
+    config.headers = {Authorization: `Bearer ${token}`};
+  }
+  const response: AxiosResponse<T> = await api.post(url, data, config);
   return {
     status: response.status,
     data: response.data,
@@ -57,8 +68,14 @@ const putRequest = async <T>(
   api: AxiosInstance,
   url: string,
   data = {},
+  requiresAuth: boolean = false,
 ): Promise<ApiResponse<T>> => {
-  const response: AxiosResponse<T> = await api.put(url, data);
+  const config: AxiosRequestConfig = {};
+  if (requiresAuth) {
+    const token = storageService.getLoginData().accessToken;
+    config.headers = {Authorization: `Bearer ${token}`};
+  }
+  const response: AxiosResponse<T> = await api.put(url, data, config);
   return {
     status: response.status,
     data: response.data,
