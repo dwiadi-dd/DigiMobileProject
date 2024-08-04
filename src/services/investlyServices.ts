@@ -1,90 +1,83 @@
-import {
-  CheckEmailReq,
-  CheckUsernameReq,
-  CheckValidRes,
-  FeedsReq,
-  LoginReq,
-  LoginRes,
-  PostDetailReq,
-  PostPropsRes,
-  RegisterReq,
-  RegisterRes,
-  TopicsMasterPropsRes,
-} from '@utils/props';
-import {
-  ApiResponse,
-  createApiInstance,
-  getRequest,
-  postRequest,
-} from './httprequester';
+import axios, {AxiosInstance, AxiosRequestConfig, AxiosResponse} from 'axios';
+import storageService from './storageServices'; // Import your storage service
+import {ApiResponse} from './httprequester';
 
-const apiDev = createApiInstance('https://develop.investly.id/api');
-const api = createApiInstance('https://api.investly.id/api');
+const createApiInstance = (baseURL: string): AxiosInstance => {
+  const instance = axios.create({
+    baseURL,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-export const checkEmail = async (
-  data: CheckEmailReq,
-): Promise<ApiResponse<CheckValidRes | undefined>> => {
-  return await postRequest(apiDev, '/auth/v1/email/check', data);
-};
-
-export const checkUsername = async (
-  data: CheckUsernameReq,
-): Promise<ApiResponse<CheckValidRes | undefined>> => {
-  return await getRequest(
-    apiDev,
-    `/social/v1/public/username/${data.username}`,
-    data,
+  instance.interceptors.response.use(
+    response => response,
+    error => {
+      if (error.response) {
+        return error.response;
+      } else {
+        return error.response;
+      }
+    },
   );
+
+  return instance;
 };
 
-export const register = async (
-  data: RegisterReq,
-): Promise<ApiResponse<RegisterRes | undefined>> => {
-  return await postRequest(apiDev, '/auth/v4/register', data);
-};
-export const login = async (
-  data: LoginReq,
-): Promise<ApiResponse<LoginRes | undefined>> => {
-  return await postRequest(apiDev, '/auth/v2/login', data);
+// ... other imports and type definitions
+
+const getRequest = async <T>(
+  api: AxiosInstance,
+  url: string,
+  params?: Record<string, any>,
+  requiresAuth: boolean = false,
+): Promise<ApiResponse<T>> => {
+  const config: AxiosRequestConfig = params ? {params} : {};
+  if (requiresAuth) {
+    const token = storageService.getLoginData().accessToken;
+    config.headers = {...config.headers, Authorization: `Bearer ${token}`};
+  }
+  const response: AxiosResponse<T> = await api.get(url, config);
+  return {
+    status: response.status,
+    data: response.data,
+  };
 };
 
-export const fetchFeed = async (
-  data: FeedsReq,
-): Promise<ApiResponse<PostPropsRes | undefined>> => {
-  return await getRequest(
-    api,
-    `/social/v2/feed?sort_by=${data.sort}&page=${data.page}&perpage=${data.size}`,
-    data,
-  );
+const postRequest = async <T>(
+  api: AxiosInstance,
+  url: string,
+  data = {},
+  requiresAuth: boolean = false,
+): Promise<ApiResponse<T>> => {
+  const config: AxiosRequestConfig = {};
+  if (requiresAuth) {
+    const token = storageService.getLoginData().accessToken;
+    config.headers = {Authorization: `Bearer ${token}`};
+  }
+  const response: AxiosResponse<T> = await api.post(url, data, config);
+  return {
+    status: response.status,
+    data: response.data,
+  };
 };
 
-export const fetchFeedDev = async (
-  data: FeedsReq,
-): Promise<ApiResponse<PostPropsRes | undefined>> => {
-  return await getRequest(
-    apiDev,
-    `/social/v2/feed?sort_by=${data.sort}&page=${data.page}&perpage=${data.size}`,
-    data,
-  );
-};
-export const fetchPostById = async (
-  data: PostDetailReq,
-): Promise<ApiResponse<PostPropsRes | undefined>> => {
-  return await getRequest(api, `/social/v1/public/post/${data.post_id}`, data);
-};
-
-export const fetchTopics = async (): Promise<
-  ApiResponse<TopicsMasterPropsRes | undefined>
-> => {
-  return await getRequest(api, '/social/v1/public/masterdata/topic');
+const putRequest = async <T>(
+  api: AxiosInstance,
+  url: string,
+  data = {},
+  requiresAuth: boolean = false,
+): Promise<ApiResponse<T>> => {
+  const config: AxiosRequestConfig = {};
+  if (requiresAuth) {
+    const token = storageService.getLoginData().accessToken;
+    config.headers = {Authorization: `Bearer ${token}`};
+  }
+  const response: AxiosResponse<T> = await api.put(url, data, config);
+  return {
+    status: response.status,
+    data: response.data,
+  };
 };
 
-export default {
-  checkEmail,
-  checkUsername,
-  login,
-  register,
-  fetchFeed,
-  fetchTopics,
-  fetchFeedDev,
-};
+export {createApiInstance, getRequest, postRequest, putRequest};
