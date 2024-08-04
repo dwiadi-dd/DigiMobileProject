@@ -1,4 +1,5 @@
 import {faker} from '@faker-js/faker';
+import notifee, {AndroidImportance} from '@notifee/react-native';
 
 export const generateDummyPosts = (numPosts = 100) => {
   const posts = [];
@@ -42,10 +43,40 @@ export const formatTimeAgo = (date: Date) => {
   }
 };
 
-export const debounce = (func, wait) => {
-  let timeout;
-  return (...args) => {
+export const debounce = (func: Function, wait: number) => {
+  let timeout: NodeJS.Timeout;
+  return (...args: any[]) => {
     clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
   };
+};
+
+export const onDisplayNotification = async ({
+  title,
+  subtitle,
+  body,
+}: {
+  title: string;
+  subtitle: string;
+  body: string;
+}) => {
+  await notifee.requestPermission();
+
+  const channelId = await notifee.createChannel({
+    id: 'default-DIG',
+    name: 'Default Channel DIGI',
+    importance: AndroidImportance.HIGH,
+  });
+
+  await notifee.displayNotification({
+    title,
+    subtitle,
+    body,
+    android: {
+      channelId,
+      pressAction: {
+        id: 'default',
+      },
+    },
+  });
 };
