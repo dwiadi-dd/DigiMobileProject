@@ -138,12 +138,14 @@ const styles = StyleSheet.create({
     lineHeight: SPACING.xl,
     fontFamily: 'Inter-Bold',
   },
+
   headingXxsmall: {
     fontSize: FONT_SIZE.xs,
     fontWeight: 'bold',
     lineHeight: SPACING.lg,
-    fontFamily: 'Inter-Bold',
+    fontFamily: 'Inter-Black',
   },
+
   paragraphLarge: {
     fontSize: FONT_SIZE.lg,
     fontWeight: 'normal',

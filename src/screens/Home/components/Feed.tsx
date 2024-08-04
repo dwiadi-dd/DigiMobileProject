@@ -1,5 +1,6 @@
-import React, {useCallback, useMemo, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
+  Alert,
   FlatList,
   RefreshControl,
   StyleSheet,
@@ -9,61 +10,121 @@ import {
 import {Typography} from '@components/atom';
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import PostItem from '@components/organism/PostItem';
-import {PostItemProps} from '@utils/props';
 import useAuth from '@hooks/useAuth';
-import {usePosts} from '@contexts/PostContext';
 import SPACING from '@constant/spacing';
 import {SkeletonPostItem} from '@components/molecules';
+import investlyServices from '@services/investlyServices';
+import {FeedItemProps} from '@utils/props';
+
+interface FeedData {
+  type: string;
+  feeds: FeedItemProps[];
+}
 
 const Feed = ({sortBy}: {sortBy: string}) => {
   const navigation = useNavigation<NavigationProp<any>>();
-  const {posts, refreshPosts} = usePosts();
-  const {loading} = usePosts();
   const [refreshing, setRefreshing] = useState(false);
+  const [page, setPage] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [data, setData] = useState<FeedData[]>([]);
 
-  const sortedPosts = useMemo(() => {
-    if (sortBy === 'trend') {
-      return [...posts].sort((a, b) => b.post_upvote - a.post_upvote);
-    }
-    if (sortBy === 'news') {
-      return [...posts].sort(
-        (a, b) =>
-          Number(new Date(b.created_at)) - Number(new Date(a.created_at)),
-      );
-    }
-    return posts;
-  }, [posts, sortBy]);
   const handleDetail = useAuth(
     useCallback(
-      (post: PostItemProps) => {
+      (post: FeedItemProps) => {
         navigation.navigate('Post', {post});
       },
       [navigation],
     ),
   );
 
+  const fetchFeed = useCallback(
+    async (pageParams: number) => {
+      setLoading(true);
+      try {
+        let res;
+        if (sortBy === 'engagement') {
+          res = await investlyServices.fetchFeed({
+            sort: sortBy,
+            page: pageParams,
+            size: 10,
+          });
+        } else if (sortBy === 'created_at') {
+          res = await investlyServices.fetchFeedDev({
+            sort: sortBy,
+            page: pageParams,
+            size: 10,
+          });
+        }
+        if (res?.status === 200) {
+          setData(prevData => {
+            const existingDataIndex = prevData.findIndex(
+              item => item.type === sortBy,
+            );
+            const newFeeds = res?.data?.data ?? [];
+
+            if (existingDataIndex !== -1) {
+              // Update existing data
+              const updatedData = [...prevData];
+              updatedData[existingDataIndex] = {
+                ...updatedData[existingDataIndex],
+                feeds:
+                  pageParams === 1
+                    ? newFeeds
+                    : [...updatedData[existingDataIndex].feeds, ...newFeeds],
+              };
+              return updatedData;
+            } else {
+              // Add new data
+              return [...prevData, {type: sortBy, feeds: newFeeds}];
+            }
+          });
+        } else {
+          Alert.alert(
+            'Fetch failed',
+            res?.data?.messages || 'An error occurred',
+          );
+        }
+      } catch (error) {
+        Alert.alert('Error', 'An error occurred while fetching data');
+      } finally {
+        setLoading(false);
+      }
+    },
+    [sortBy],
+  );
+
   const onRefresh = useCallback(() => {
     setRefreshing(true);
-    refreshPosts();
-    setRefreshing(false);
-  }, [refreshPosts]);
+    setPage(1);
+    fetchFeed(1).finally(() => setRefreshing(false));
+  }, [fetchFeed]);
 
-  const Footer = useMemo(
-    () => (
-      <View style={styles.footerContainer}>
-        <Typography type="paragraph" size="small">
-          Semua feed sudah kamu lihat 🎉
-        </Typography>
-      </View>
-    ),
-    [],
+  useEffect(() => {
+    fetchFeed(page);
+  }, [page, fetchFeed]);
+
+  const onEndReach = useCallback(() => {
+    const currentFeeds = data.find(item => item.type === sortBy)?.feeds;
+    if (currentFeeds && currentFeeds.length > 0) {
+      setPage(prevPage => prevPage + 1);
+    }
+  }, [data, sortBy]);
+
+  const currentFeedData = data.find(item => item.type === sortBy)?.feeds || [];
+
+  const Footer = (
+    <View style={styles.footerContainer}>
+      <Typography type="paragraph" size="small">
+        Semua feed sudah kamu lihat 🎉
+      </Typography>
+    </View>
   );
 
   return (
     <FlatList
-      data={sortedPosts}
+      data={currentFeedData}
       renderItem={({item, index}) =>
-        loading ? (
+        loading && index >= currentFeedData.length - 10 ? (
           <SkeletonPostItem key={index} />
         ) : (
           <TouchableOpacity onPress={() => handleDetail(item)}>
@@ -75,6 +136,8 @@ const Feed = ({sortBy}: {sortBy: string}) => {
       refreshControl={
         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
+      onEndReached={onEndReach}
+      onEndReachedThreshold={0.5}
       ListFooterComponent={Footer}
     />
   );

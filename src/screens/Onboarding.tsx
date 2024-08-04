@@ -1,16 +1,17 @@
 import {FlatList, StyleSheet, View, Image} from 'react-native';
-import React, {FC, useRef, useState} from 'react';
+import React, {FC, useEffect, useRef, useState} from 'react';
 
-import {NavigationProp} from '@react-navigation/native';
+import {CommonActions, NavigationProp} from '@react-navigation/native';
 import COLORS from '@constant/colors';
 import {Button} from '@components/molecules';
 import {Typography} from '@components/atom';
 import {onboardingData} from '@constant/onBoardingData';
 import {screenWidth} from '@constant/globalSize';
 import SPACING from '@constant/spacing';
-import {IndicatorProps} from '@utils/props';
+import {storageServices} from '@services/index';
+import {OnboardIndicatorProps} from '@utils/props';
 
-const Indicator: FC<IndicatorProps> = ({currentIndex}) => {
+const Indicator: FC<OnboardIndicatorProps> = ({currentIndex}) => {
   return (
     <View style={styles.indicatorContainer}>
       {onboardingData.map((_, index) => (
@@ -47,7 +48,17 @@ const Onboarding = ({navigation}: {navigation: NavigationProp<any>}) => {
       }
     },
   ).current;
-
+  useEffect(() => {
+    const isLoggedIn = storageServices.getLoginData().isLoggedIn;
+    if (isLoggedIn) {
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'HomeTab'}],
+        }),
+      );
+    }
+  }, [navigation]);
   return (
     <View style={styles.container}>
       <FlatList

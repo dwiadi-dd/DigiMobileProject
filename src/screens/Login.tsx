@@ -16,6 +16,7 @@ import COLORS from '@constant/colors';
 import investlyServices from '@services/investlyServices';
 import storageServices from '@services/storageServices';
 import * as Keychain from 'react-native-keychain';
+import database from '@react-native-firebase/database';
 const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const [email, setEmail] = useState('');
 
@@ -25,6 +26,8 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const [passwordError, setPasswordError] = useState('');
   const [isValid, setIsValid] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [isfingerPrint, setIsFingerPrint] = useState(false);
+  const [isFingerprintFF, setIsFingerprintFF] = useState(false);
 
   const validateEmail = (input: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -76,6 +79,7 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
       await Keychain.setGenericPassword(email, password, {
         accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY,
       });
+      setIsFingerPrint(true);
     } catch (error) {
       console.error('Error saving credentials to secure storage:', error);
     }
@@ -92,13 +96,14 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
       console.error('Error getting credentials from secure storage:', error);
     }
   }, []);
+
   const onLogin = useCallback(async () => {
     setLoading(true);
     const res = await investlyServices.login({email, password});
     if (res?.status === 200) {
       saveCredentialsToSecureStorage();
       setLoading(false);
-      storageServices.login();
+      storageServices.setLoginData(res?.data?.data);
       navigation.dispatch(
         CommonActions.reset({
           index: 0,
@@ -109,7 +114,7 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
       setLoading(false);
       Alert.alert('Login failed', res?.data?.messages || 'An error occurred');
     }
-  }, [email, password, navigation]);
+  }, [email, password, navigation, saveCredentialsToSecureStorage]);
 
   const handleLewati = () => {
     navigation.navigate('HomeTab');
@@ -118,8 +123,9 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
     navigation.navigate('Register');
   };
   const handleEmailChange = (text: string) => {
-    setEmail(text);
-    validateEmail(text);
+    const trimmedEmail = text.trim().toLowerCase();
+    setEmail(trimmedEmail);
+    validateEmail(trimmedEmail);
   };
 
   const handlePasswordChange = (text: string) => {
@@ -132,7 +138,7 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   }, [emailError, passwordError, email, password]);
 
   useEffect(() => {
-    const isLoggedIn = storageServices.isLoggedIn();
+    const isLoggedIn = storageServices.getLoginData().isLoggedIn;
     if (isLoggedIn) {
       navigation.dispatch(
         CommonActions.reset({
@@ -142,6 +148,15 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
       );
     }
   }, [navigation]);
+  useEffect(() => {
+    database()
+      .ref('/is_enabled_fingerprint_feature')
+      .once('value')
+      .then(snapshot => {
+        console.log('is enabled finger ', snapshot);
+        setIsFingerprintFF(snapshot.val());
+      });
+  }, []);
   return (
     <SafeAreaView style={styles.viewContainer}>
       <View style={styles.headerContainer}>
@@ -188,13 +203,15 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
             value={password}
           />
           <View style={styles.helperContainer}>
-            <Button
-              type="text-only"
-              variant="link"
-              size="small"
-              onPress={loginWithFingerPrint}>
-              Login with finger
-            </Button>
+            {isFingerprintFF && (
+              <Button
+                type="text-only"
+                variant="link"
+                size="small"
+                onPress={loginWithFingerPrint}>
+                Login with finger
+              </Button>
+            )}
           </View>
           <Button
             type="text-only"

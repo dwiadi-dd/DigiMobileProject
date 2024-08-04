@@ -11,15 +11,16 @@ import Avatar from '@components/atom/Avatar';
 import Feed from './components/Feed';
 import useAuth from '@hooks/useAuth';
 import SPACING from '@constant/spacing';
+import storageServices from '@services/storageServices';
 
 const TopTab = createMaterialTopTabNavigator();
 
 const Home = () => {
-  const {isAuthenticated} = useContext(AuthContext);
+  const isLoggedIn = storageServices.getLoginData().isLoggedIn;
   const navigation = useNavigation<NavigationProp<any>>();
-  const userAvatar = isAuthenticated
-    ? 'https://lwfiles.mycourse.app/656ef73b8e59fa6dfcddbe98-public/3073ed5d42a0e38174e311a1a0cb0800.png'
-    : undefined;
+  const userAvatar =
+    isLoggedIn &&
+    'https://lwfiles.mycourse.app/656ef73b8e59fa6dfcddbe98-public/3073ed5d42a0e38174e311a1a0cb0800.png';
 
   const handleCreate = useAuth(() => {
     navigation.navigate('Create Post');
@@ -28,7 +29,7 @@ const Home = () => {
     <View style={styles.flex}>
       <View style={styles.homeHeaderContainer}>
         <View style={styles.postSection}>
-          {isAuthenticated ? (
+          {isLoggedIn ? (
             <Avatar image={userAvatar} size="large" />
           ) : (
             <Avatar size="large" />
@@ -75,11 +76,14 @@ const Home = () => {
         }}>
         <TopTab.Screen
           name="Trending"
-          children={() => <Feed sortBy="trend" />}
+          children={() => <Feed sortBy="engagement" />}
         />
-        <TopTab.Screen name="News" children={() => <Feed sortBy="news" />} />
+        <TopTab.Screen
+          name="News"
+          children={() => <Feed sortBy="created_at" />}
+        />
       </TopTab.Navigator>
-      {!isAuthenticated && <LoginAlert />}
+      {!isLoggedIn && <LoginAlert />}
     </View>
   );
 };

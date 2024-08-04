@@ -8,7 +8,6 @@ import {DetailPost} from '@screens/DetailPost';
 import CreatePost from '@screens/CreatePost';
 import {HomeTab} from '@screens/Home/components/HomeTab';
 import Register from '@screens/Register/Register';
-import RegisterTwo from '@screens/Register/RegisterTwo';
 const Stack = createNativeStackNavigator();
 
 export default function MainNavigation() {
@@ -23,11 +22,6 @@ export default function MainNavigation() {
         <Stack.Screen
           name="Register"
           component={Register}
-          options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="RegisterTwo"
-          component={RegisterTwo}
           options={{headerShown: false}}
         />
         <Stack.Screen

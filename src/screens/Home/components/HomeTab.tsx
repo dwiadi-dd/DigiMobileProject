@@ -46,5 +46,5 @@ export const HomeTab = () => {
 const ProfileTabBarButton = ({...props}) => {
   const handleProfilePress = useAuth(() => {});
 
-  return <TouchableOpacity {...props} onPress={handleProfilePress} />;
+  return <TouchableOpacity {...props} />;
 };

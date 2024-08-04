@@ -11,7 +11,7 @@ const StepperIndicator: FC<IndicatorProps> = ({currentStep, totalSteps}) => {
   useEffect(() => {
     Animated.timing(progressBarWidth, {
       toValue: (Number(currentStep) / Number(totalSteps)) * 100,
-      duration: 300, // duration of the animation in milliseconds
+      duration: 300,
       useNativeDriver: false,
     }).start();
   }, [currentStep, totalSteps, progressBarWidth]);
@@ -23,15 +23,15 @@ const StepperIndicator: FC<IndicatorProps> = ({currentStep, totalSteps}) => {
 
   return (
     <View style={styles.container}>
+      <View style={styles.labelContainer}>
+        <Typography type="heading" size="xxsmall" style={styles.stepText}>
+          {`${currentStep} dari ${totalSteps}`}
+        </Typography>
+      </View>
       <View style={styles.progressBarContainer}>
         <Animated.View
           style={[styles.progressBar, {width: progressBarWidthInterpolate}]}
         />
-      </View>
-      <View style={styles.labelContainer}>
-        <Typography type="paragraph" size="small" style={styles.stepText}>
-          {`${currentStep} dari ${totalSteps}`}
-        </Typography>
       </View>
     </View>
   );
@@ -39,7 +39,7 @@ const StepperIndicator: FC<IndicatorProps> = ({currentStep, totalSteps}) => {
 
 const styles = StyleSheet.create({
   container: {
-    marginBottom: SPACING.xl,
+    gap: 4,
   },
   progressBarContainer: {
     height: 4,
@@ -52,11 +52,11 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.purple500,
   },
   labelContainer: {
-    alignItems: 'flex-end',
+    alignItems: 'flex-start',
     marginTop: SPACING.xs,
   },
   stepText: {
-    color: COLORS.neutral500,
+    color: COLORS.neutral700,
   },
 });
 

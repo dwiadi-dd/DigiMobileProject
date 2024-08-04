@@ -28,6 +28,7 @@ export const PostsProvider: FunctionComponent<{children: React.ReactNode}> = ({
   children,
 }) => {
   const [posts, setPosts] = useState<PostItemProps[]>([]);
+
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {

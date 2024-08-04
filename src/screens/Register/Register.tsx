@@ -7,56 +7,88 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React, {FC, useCallback, useContext, useEffect, useState} from 'react';
+import React, {FC, useCallback, useEffect, useState} from 'react';
 import {Button, TextField} from '@components/molecules';
 import {Icon, Typography} from '@components/atom';
-import {NavigationProp} from '@react-navigation/native';
-import {AuthContext} from '@contexts/AuthContext';
+import {CommonActions, NavigationProp} from '@react-navigation/native';
 import SPACING from '@constant/spacing';
 import COLORS from '@constant/colors';
 import StepperIndicator from './components/StepIndicator';
 import investlyServices from '@services/investlyServices';
-import {TopicsMasterPropsRes} from '@utils/props';
-import {debounce} from '@utils/helper';
+import {TopicMaster, TopicsMasterPropsRes} from '@utils/props';
+import {debounce, onDisplayNotification} from '@utils/helper';
+import storageServices from '@services/storageServices';
 
 const STEP_TITLE = ['Buat Akun', 'Tambahkan Nama & Username', 'Pilih 3 Topik'];
 
 const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
-  const {login} = useContext(AuthContext);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [nameError, setNameError] = useState('');
-  const [emailError, setEmailError] = useState('');
-  const [emailSuccess, setEmailSuccess] = useState(false);
-  const [passwordError, setPasswordError] = useState('');
-  const [confirmPasswordError, setConfirmPasswordError] = useState('');
-  const [isEmailUnique, setIsEmailUnique] = useState(true);
-  const [isUsernameUnique, setIsUsernameUnique] = useState(true);
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+    name: '',
+    username: '',
+    favorite_topic_ids: [],
+  });
+
+  const [inputState, setInputState] = useState({
+    email: {isValid: false, errorMessage: '', states: 'default'},
+    password: {isValid: false, errorMessage: '', states: 'default'},
+    confirmPassword: {isValid: false, errorMessage: '', states: 'default'},
+    name: {isValid: false, errorMessage: '', states: 'default'},
+    username: {isValid: false, errorMessage: '', states: 'default'},
+  });
   const [isValid, setIsValid] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const [username, setUsername] = useState('');
-  const [usernameError, setUsernameError] = useState('');
-  const [topics, setTopics] = useState<TopicsMasterPropsRes>([]);
-  const [selectedTopics, setSelectedTopics] = useState([]);
+  const [topics, setTopics] = useState<
+    TopicsMasterPropsRes | [] | {loading: boolean}
+  >({
+    data: [],
+    loading: false,
+  });
+  const [selectedTopics, setSelectedTopics] = useState<{id: string}[]>([]);
+
+  const updateFormData = (field: string, value: string) => {
+    if (field === 'email') {
+      value = value.trim().toLowerCase();
+    }
+    setFormData(prev => ({...prev, [field]: value}));
+  };
+
+  const updateInputState = (
+    field: string,
+    isValid: boolean,
+    errorMessage: string,
+    states: string,
+  ) => {
+    setInputState(prev => ({
+      ...prev,
+      [field]: {isValid, errorMessage, states},
+    }));
+  };
 
   const validateEmail = (input: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!input) {
-      setEmailError('Email is required.');
-      setEmailSuccess(false);
+      updateInputState('email', false, 'Email is required.', 'default');
     } else if (input.length > 254) {
-      setEmailError('Email should not exceed 254 characters.');
-      setEmailSuccess(false);
+      updateInputState(
+        'email',
+        false,
+        'Email should not exceed 254 characters.',
+        'negative',
+      );
     } else if (!emailRegex.test(input)) {
-      setEmailError('Please enter a valid email address.');
-      setEmailSuccess(false);
+      updateInputState(
+        'email',
+        false,
+        'Please enter a valid email address.',
+        'negative',
+      );
     } else {
       checkEmailUniqueness(input);
-      setEmailError('');
-      setEmailSuccess(true);
+      updateInputState('email', true, '', 'positive');
     }
   };
 
@@ -69,10 +101,13 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(input);
 
     if (!input) {
-      setPasswordError('Password is required.');
+      updateInputState('password', false, 'Password is required.', 'default');
     } else if (input.length < minLength || input.length > maxLength) {
-      setPasswordError(
+      updateInputState(
+        'password',
+        false,
         `Password must be between ${minLength} and ${maxLength} characters.`,
+        'negative',
       );
     } else if (
       !hasUppercase ||
@@ -80,66 +115,81 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
       !hasNumber ||
       !hasSpecialChar
     ) {
-      setPasswordError(
+      updateInputState(
+        'password',
+        false,
         'Password must include uppercase, lowercase, number, and special character.',
+        'negative',
       );
     } else {
-      setPasswordError('');
+      updateInputState('password', true, '', 'positive');
     }
   };
+
   const validateName = (input: string) => {
-    if (input.length < 3) {
-      setNameError('Name should have at least three characters.');
+    if (!input) {
+      updateInputState('name', false, 'Password is required.', 'default');
+    } else if (input.length < 3) {
+      updateInputState(
+        'name',
+        false,
+        'nama harus lebih dari 3 huruf',
+        'negative',
+      );
     } else {
-      setNameError('');
+      updateInputState('name', true, '', 'positive');
     }
   };
 
   const validateUsername = (input: string) => {
     if (!input) {
-      setUsernameError('Username is required.');
+      updateInputState('username', false, '', 'negative');
+    } else if (input.length < 3) {
+      updateInputState(
+        'username',
+        false,
+        'username harus lebih dari 3 huruf',
+        'negative',
+      );
     } else {
       checkUsernameUniqueness(input);
-      setUsernameError('');
     }
   };
 
   const validateConfirmPassword = (input: string) => {
-    if (input !== password) {
-      setConfirmPasswordError(
-        'Password and Confirm Password must be the same.',
+    if (input !== formData?.password) {
+      updateInputState(
+        'confirmPassword',
+        false,
+        'Confirm password tidak sesuai',
+        'negative',
       );
     } else {
-      setConfirmPasswordError('');
+      updateInputState('confirmPassword', true, '', 'positive');
     }
   };
 
-  const handleEmailChange = (text: string) => {
-    const trimmedEmail = text.trim().toLowerCase();
-    setEmail(trimmedEmail);
-    validateEmail(trimmedEmail);
+  const handleInputChange = (field: string, text: string) => {
+    updateFormData(field, text);
+    switch (field) {
+      case 'email':
+        validateEmail(text);
+        break;
+      case 'password':
+        validatePassword(text);
+        break;
+      case 'confirmPassword':
+        validateConfirmPassword(text);
+        break;
+      case 'name':
+        validateName(text);
+        break;
+      case 'username':
+        validateUsername(text);
+        break;
+    }
   };
-
-  const handleNameChange = (text: string) => {
-    setName(text);
-    validateName(text);
-  };
-
-  const handleUsernameChange = (text: string) => {
-    setUsername(text);
-    validateUsername(text);
-  };
-
-  const handlePasswordChange = (text: string) => {
-    setPassword(text);
-    validatePassword(text);
-  };
-  const handleConfirmPasswordChange = (text: string) => {
-    setConfirmPassword(text);
-    validateConfirmPassword(text);
-  };
-
-  const handleTopicSelection = topic => {
+  const handleTopicSelection = (topic: TopicMaster) => {
     setSelectedTopics(prev => {
       if (prev.includes(topic)) {
         return prev.filter(t => t !== topic);
@@ -149,14 +199,15 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
       return prev;
     });
   };
+
   const fetcMasterTopics = useCallback(async () => {
-    setLoading(true);
+    setTopics({data: [], loading: true});
     const res = await investlyServices.fetchTopics();
+    console.log(res);
     if (res?.status === 200) {
-      setLoading(false);
-      setTopics(res?.data?.data);
+      setTopics({data: res?.data?.data, loading: false});
     } else {
-      setLoading(false);
+      setTopics({data: [], loading: false});
       Alert.alert('Login failed', res?.data?.messages || 'An error occurred');
     }
   }, []);
@@ -166,15 +217,17 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
       try {
         const res = await investlyServices.checkEmail({email: emailToCheck});
         if (res?.status === 200) {
-          console.log('email unique');
-          setIsEmailUnique(true);
+          updateInputState('email', true, '', 'positive');
         } else {
-          setIsEmailUnique(false);
-          setEmailError('This email is already taken.');
+          updateInputState('email', false, 'email sudah digunakan', 'negative');
         }
       } catch (error) {
-        console.error('Email check error:', error);
-        setEmailError('Unable to verify email uniqueness.');
+        updateInputState(
+          'email',
+          false,
+          'gagak memvalidasi email!',
+          'negative',
+        );
       }
     }, 500);
 
@@ -184,19 +237,30 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const checkUsernameUniqueness = useCallback((username: string) => {
     const debouncedCheck = debounce(async (usernameToCheck: string) => {
       try {
-        console.log(usernameToCheck);
         const res = await investlyServices.checkUsername({
           username: usernameToCheck,
         });
-        if (res?.status === 404) {
-          setIsUsernameUnique(true);
+        if (
+          res?.status === 404 &&
+          typeof res?.data?.messages === 'string' &&
+          res?.data?.messages === 'user tidak ditemukan'
+        ) {
+          updateInputState('username', true, '', 'positive');
         } else {
-          setIsUsernameUnique(false);
-          setUsernameError('This username is already taken.');
+          updateInputState(
+            'username',
+            false,
+            'Username sudah digunakan',
+            'negative',
+          );
         }
       } catch (error) {
-        console.error('Email check error:', error);
-        setUsernameError('Unable to verify email uniqueness.');
+        updateInputState(
+          'username',
+          false,
+          'gagal memvalidasi username!',
+          'negative',
+        );
       }
     }, 500);
 
@@ -225,24 +289,35 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
 
     try {
       setLoading(true);
-      const userData = {
-        email,
-        password,
-        name,
-        username,
+      const registerData = {
+        ...formData,
         favorite_topic_ids: selectedTopics.map(t => t.id),
       };
-      console.log(userData);
-      // const res = await investlyServices.register(userData);
-      // if (res.status === 200) {
-      //   navigation.navigate('HomeTab');
-      //   login();
-      // } else {
-      //   Alert.alert(
-      //     'Registration failed',
-      //     res?.data?.messages || 'An error occurred',
-      //   );
-      // }
+
+      const res = await investlyServices.register(registerData);
+      if (res.status === 200) {
+        navigation.navigate('HomeTab');
+        setLoading(false);
+        storageServices.setLoginData(res?.data?.data);
+        navigation.dispatch(
+          CommonActions.reset({
+            index: 0,
+            routes: [{name: 'HomeTab'}],
+          }),
+        );
+        onDisplayNotification({
+          title: 'Horrrayy!, Daftar Berhasil!',
+          body: 'Akun Berhasil Terdaftar!!',
+          subtitle: 'success',
+        });
+      } else {
+        setLoading(false);
+
+        Alert.alert(
+          'Registration failed',
+          res?.data?.messages || 'An error occurred',
+        );
+      }
     } catch (error) {
       console.error('Registration error:', error);
       Alert.alert('Error', 'An unexpected error occurred during registration');
@@ -254,45 +329,23 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
     if (currentStep === 1) {
       setIsValid(
         Boolean(
-          !emailError &&
-            !passwordError &&
-            !confirmPasswordError &&
-            email &&
-            password &&
-            confirmPassword &&
-            isEmailUnique,
+          inputState?.email?.isValid &&
+            inputState?.password?.isValid &&
+            inputState?.confirmPassword?.isValid,
         ),
       );
     } else if (currentStep === 2) {
       setIsValid(
-        Boolean(
-          !nameError && !usernameError && name && username && isUsernameUnique,
-        ),
+        Boolean(inputState?.name?.isValid && inputState?.username?.isValid),
       );
     }
-  }, [
-    currentStep,
-    emailError,
-    passwordError,
-    confirmPasswordError,
-    email,
-    password,
-    confirmPassword,
-    isEmailUnique,
-    nameError,
-    usernameError,
-    name,
-    username,
-    isUsernameUnique,
-  ]);
+  }, [currentStep, inputState]);
 
   useEffect(() => {
-    if (currentStep === 3) {
-      fetcMasterTopics();
-    }
-  }, [currentStep, fetcMasterTopics]);
+    fetcMasterTopics();
+  }, []);
 
-  const renderTopicItem = ({item}) => (
+  const renderTopicItem = ({item}: {item: TopicMaster}) => (
     <TouchableOpacity
       style={[styles.topicItem]}
       onPress={() => handleTopicSelection(item)}>
@@ -327,29 +380,39 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
               label="Email"
               placeholder="Masukan Email Kamu"
               state={
-                emailError ? 'negative' : emailSuccess ? 'positive' : 'default'
+                inputState?.email?.states as 'default' | 'positive' | 'negative'
               }
-              message={emailError}
-              onChangeText={handleEmailChange}
-              value={email}
+              message={inputState?.email?.errorMessage}
+              onChangeText={text => handleInputChange('email', text)}
+              value={formData?.email}
             />
             <TextField
               type="password"
               label="Password"
               placeholder="Masukan Password Kamu"
-              state={passwordError ? 'negative' : 'default'}
-              message={passwordError}
-              onChangeText={handlePasswordChange}
-              value={password}
+              state={
+                inputState?.password?.states as
+                  | 'default'
+                  | 'positive'
+                  | 'negative'
+              }
+              message={inputState?.password?.errorMessage}
+              onChangeText={text => handleInputChange('password', text)}
+              value={formData?.password}
             />
             <TextField
               type="password"
               label="Konfirmasi Password"
               placeholder="Masukan Konfirmasi Password"
-              state={confirmPasswordError ? 'negative' : 'default'}
-              message={confirmPasswordError}
-              onChangeText={handleConfirmPasswordChange}
-              value={confirmPassword}
+              state={
+                inputState?.confirmPassword?.states as
+                  | 'default'
+                  | 'positive'
+                  | 'negative'
+              }
+              message={inputState?.confirmPassword?.errorMessage}
+              onChangeText={text => handleInputChange('confirmPassword', text)}
+              value={formData?.confirmPassword}
             />
           </>
         );
@@ -359,25 +422,32 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
             <TextField
               label="Nama"
               placeholder="Masukan Nama Kamu"
-              state={nameError ? 'negative' : 'default'}
-              message={nameError}
-              onChangeText={handleNameChange}
-              value={name}
+              state={
+                inputState?.name?.states as 'default' | 'positive' | 'negative'
+              }
+              message={inputState?.name?.errorMessage}
+              onChangeText={text => handleInputChange('name', text)}
+              value={formData?.name}
             />
             <TextField
               label="Username"
               placeholder="Masukan Username Kamu"
-              state={usernameError ? 'negative' : 'default'}
-              message={usernameError}
-              onChangeText={handleUsernameChange}
-              value={username}
+              state={
+                inputState?.username?.states as
+                  | 'default'
+                  | 'positive'
+                  | 'negative'
+              }
+              message={inputState?.username?.errorMessage}
+              onChangeText={text => handleInputChange('username', text)}
+              value={formData?.username}
             />
           </>
         );
       case 3:
         return (
           <FlatList
-            data={topics}
+            data={topics?.data || []}
             renderItem={renderTopicItem}
             keyExtractor={item => item.id.toString()}
             numColumns={3}
@@ -420,7 +490,7 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
             type="text-only"
             variant="primary"
             size="medium"
-            disabled={!isValid}
+            disabled={!isValid || loading}
             onPress={currentStep < 3 ? handleNext : handleRegister}>
             {currentStep === 3 ? 'Daftar' : 'Selanjutnya'}
           </Button>

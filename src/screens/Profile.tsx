@@ -5,9 +5,31 @@ import SPACING from '@constant/spacing';
 import {Button} from '@components/molecules';
 import {storageServices} from '@services/index';
 import {CommonActions, useNavigation} from '@react-navigation/native';
-
+import notifee, {AndroidImportance} from '@notifee/react-native';
 const Profile: FC = () => {
   const navigation = useNavigation();
+  async function onDisplayNotification() {
+    // Request permissions (required for iOS)
+    await notifee.requestPermission();
+
+    const channelId = await notifee.createChannel({
+      id: 'default-DIG',
+      name: 'Default Channel DIGI',
+      importance: AndroidImportance.HIGH,
+    });
+
+    await notifee.displayNotification({
+      title: 'Notification Title',
+      subtitle: 'Subtitle of the notification',
+      body: 'Main body content of the notification',
+      android: {
+        channelId,
+        pressAction: {
+          id: 'default',
+        },
+      },
+    });
+  }
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.itemContainer}>
@@ -19,8 +41,15 @@ const Profile: FC = () => {
           size="medium"
           variant="primary"
           type="text-only"
+          onPress={onDisplayNotification}>
+          NOTIF
+        </Button>
+        <Button
+          size="medium"
+          variant="primary"
+          type="text-only"
           onPress={() => {
-            storageServices.logout();
+            storageServices.clearLoginData();
             navigation.dispatch(
               CommonActions.reset({
                 index: 0,
