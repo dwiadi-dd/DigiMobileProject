@@ -8,6 +8,7 @@ import {
   LoginRes,
   PostDetailReq,
   PostPropsRes,
+  ProfileRes,
   RegisterReq,
   RegisterRes,
   TopicsMasterPropsRes,
@@ -97,6 +98,12 @@ export const upvotePost = async (
   );
 };
 
+export const fetchProfile = async (
+  data: undefined,
+): Promise<ApiResponse<ProfileRes | undefined>> => {
+  return await getRequest(apiDev, '/social/v2/profile', data, true);
+};
+
 export default {
   createPost,
   checkEmail,
@@ -107,4 +114,5 @@ export default {
   fetchTopics,
   fetchFeedDev,
   upvotePost,
+  fetchProfile,
 };

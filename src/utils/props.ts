@@ -197,3 +197,15 @@ export interface CreatePostReq {
 export interface UpvoteReq {
   post_id: string;
 }
+
+export interface ProfileRes {
+  status: boolean;
+  messages: string;
+  data: {
+    user_id: string;
+    name: string;
+    username: string;
+    profile_path: string;
+    email: string;
+  };
+}
