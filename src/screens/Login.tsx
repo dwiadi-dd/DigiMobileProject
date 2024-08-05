@@ -17,6 +17,7 @@ import investlyServices from '@services/investlyServices';
 import storageServices from '@services/storageServices';
 import * as Keychain from 'react-native-keychain';
 import database from '@react-native-firebase/database';
+import analytics from '@react-native-firebase/analytics';
 const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const [email, setEmail] = useState('');
 
@@ -103,6 +104,7 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
     if (res?.status === 200 && res.data?.data) {
       saveCredentialsToSecureStorage();
       storageServices.setLoginData(res.data.data);
+
       setLoading(false);
       navigation.dispatch(
         CommonActions.reset({
@@ -119,7 +121,8 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const handleLewati = () => {
     navigation.navigate('HomeTab');
   };
-  const handleDaftar = () => {
+  const handleDaftar = async () => {
+    await analytics().logEvent('click_register_button');
     navigation.navigate('Register');
   };
   const handleEmailChange = (text: string) => {

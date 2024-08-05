@@ -18,6 +18,7 @@ import investlyServices from '@services/investlyServices';
 import {TopicMaster, TopicsMasterPropsRes} from '@utils/props';
 import {debounce, onDisplayNotification} from '@utils/helper';
 import storageServices from '@services/storageServices';
+import analytics from '@react-native-firebase/analytics';
 
 const STEP_TITLE = ['Buat Akun', 'Tambahkan Nama & Username', 'Pilih 3 Topik'];
 
@@ -47,7 +48,9 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
     data: [],
     loading: false,
   });
-  const [selectedTopics, setSelectedTopics] = useState<{id: string}[]>([]);
+  const [selectedTopics, setSelectedTopics] = useState<
+    {id: string; label: string}[]
+  >([]);
 
   const updateFormData = (field: string, value: string) => {
     if (field === 'email') {
@@ -192,8 +195,22 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const handleTopicSelection = (topic: TopicMaster) => {
     setSelectedTopics(prev => {
       if (prev.includes(topic)) {
+        analytics().logEvent('click_register_select_topic', {
+          email: formData.email,
+          name: formData.name,
+          username: formData.username,
+          topic_id: topic.id,
+          topic_name: topic.label,
+        });
         return prev.filter(t => t !== topic);
       } else if (prev.length < 3) {
+        analytics().logEvent('click_register_unselect_topic', {
+          email: formData.email,
+          name: formData.name,
+          username: formData.username,
+          topic_id: topic.id,
+          topic_name: topic.label,
+        });
         return [...prev, topic];
       }
       return prev;
@@ -219,9 +236,15 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
         if (res?.status === 200) {
           updateInputState('email', true, '', 'positive');
         } else {
+          await analytics().logEvent('failed_validate_register_email', {
+            email,
+          });
           updateInputState('email', false, 'email sudah digunakan', 'negative');
         }
       } catch (error) {
+        await analytics().logEvent('failed_validate_register_email', {
+          email,
+        });
         updateInputState(
           'email',
           false,
@@ -245,8 +268,14 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
           typeof res?.data?.messages === 'string' &&
           res?.data?.messages === 'user tidak ditemukan'
         ) {
+          await analytics().logEvent('failed_validate_register_username', {
+            username,
+          });
           updateInputState('username', true, '', 'positive');
         } else {
+          await analytics().logEvent('failed_validate_register_username', {
+            username,
+          });
           updateInputState(
             'username',
             false,
@@ -268,6 +297,18 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   }, []);
 
   const handleNext = () => {
+    if (currentStep === 1) {
+      analytics().logEvent('click_register_button_step_1', {
+        email: formData?.email,
+      });
+    }
+    if (currentStep === 2) {
+      analytics().logEvent('click_register_button_step_2', {
+        email: formData?.email,
+        name: formData?.name,
+        username: formData?.username,
+      });
+    }
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1);
     }
@@ -281,7 +322,13 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
 
   const handleRegister = async () => {
     if (currentStep !== 3) return;
-
+    analytics().logEvent('click_register_button_step_3', {
+      email: formData?.email,
+      name: formData?.name,
+      username: formData?.username,
+      topic_id: selectedTopics.map(topic => topic.id).join(','),
+      topic_name: selectedTopics.map(topic => topic.label).join(','),
+    });
     if (selectedTopics.length < 3) {
       Alert.alert('Error', 'Please select at least one topic');
       return;
@@ -296,6 +343,13 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
 
       const res = await investlyServices.register(registerData);
       if (res.status === 200) {
+        analytics().logEvent('success_register_account', {
+          email: formData?.email,
+          name: formData?.name,
+          username: formData?.username,
+          topic_id: selectedTopics.map(topic => topic.id).join(','),
+          topic_name: selectedTopics.map(topic => topic.label).join(','),
+        });
         navigation.navigate('HomeTab');
         setLoading(false);
         storageServices.setLoginData(res?.data?.data);
@@ -312,7 +366,13 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
         });
       } else {
         setLoading(false);
-
+        analytics().logEvent('failed_register_account', {
+          email: formData?.email,
+          name: formData?.name,
+          username: formData?.username,
+          topic_id: selectedTopics.map(topic => topic.id).join(','),
+          topic_name: selectedTopics.map(topic => topic.label).join(','),
+        });
         Alert.alert(
           'Registration failed',
           res?.data?.messages || 'An error occurred',

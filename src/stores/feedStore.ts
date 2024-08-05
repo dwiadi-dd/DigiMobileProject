@@ -1,7 +1,7 @@
 import {create} from 'zustand';
 import {FeedItemProps} from '@utils/props';
 import investlyServices from '@services/investlyServices';
-import {ToastAndroid} from 'react-native';
+import analytics from '@react-native-firebase/analytics';
 
 interface FeedState {
   feedData: {[key: string]: FeedItemProps[]};
@@ -92,6 +92,10 @@ export const useFeedStore = create<FeedState>()((set, get) => ({
       if (res.status === 200) {
         set(state => {
           const newFeedData = {...state.feedData};
+          analytics().logEvent('click_upvote', {
+            username: newFeedData.username,
+            postId,
+          });
           for (const key in newFeedData) {
             newFeedData[key] = newFeedData[key].map(post =>
               post.id === postId
@@ -106,7 +110,6 @@ export const useFeedStore = create<FeedState>()((set, get) => ({
       }
     } catch (error) {
       console.error('Error upvoting post:', error);
-      // Optionally set an error state or show an alert
     }
   },
   getPostById: id => {

@@ -18,8 +18,12 @@ import investlyServices from '@services/investlyServices';
 import {Picker} from '@react-native-picker/picker';
 import SPACING from '@constant/spacing';
 import FONT_SIZE from '@constant/fontSize';
+import analytics from '@react-native-firebase/analytics';
+import {useProfileStore} from '@stores/userStore';
 
 const CreatePost: FC = () => {
+  const {profileData} = useProfileStore();
+
   const navigation = useNavigation();
   const [topics, setTopics] = useState<
     TopicsMasterPropsRes | [] | {loading: boolean}
@@ -50,20 +54,28 @@ const CreatePost: FC = () => {
   }, []);
   const handlePost = useCallback(async () => {
     setLoading(true);
-    // console.log(formData);
+
     const res = await investlyServices.createPost(formData);
     if (res?.status === 200) {
+      analytics().logEvent('Success_create_post', {
+        username: profileData?.username,
+        email: profileData?.email,
+      });
       ToastAndroid.show('Post berhasil', ToastAndroid.SHORT);
       setLoading(false);
       navigation.goBack();
     } else {
+      analytics().logEvent('Failed_create_post', {
+        username: profileData?.username,
+        email: profileData?.email,
+      });
       setLoading(false);
       Alert.alert(
         'Post data failded',
         res?.data?.messages || 'An error occurred',
       );
     }
-  }, [formData]);
+  }, []);
 
   useEffect(() => {
     fetcMasterTopics();

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {LoginAlert, TextField} from '@components/molecules';
@@ -10,25 +10,31 @@ import Feed from './components/Feed';
 import useAuth from '@hooks/useAuth';
 import SPACING from '@constant/spacing';
 import storageServices from '@services/storageServices';
+import {useProfileStore} from '@stores/userStore';
 
 const TopTab = createMaterialTopTabNavigator();
 
 const Home = () => {
+  const {profileData, fetchProfile} = useProfileStore();
   const isLoggedIn = storageServices.getLoginData().isLoggedIn;
   const navigation = useNavigation<NavigationProp<any>>();
-  const userAvatar = isLoggedIn
-    ? 'https://lwfiles.mycourse.app/656ef73b8e59fa6dfcddbe98-public/3073ed5d42a0e38174e311a1a0cb0800.png'
-    : undefined;
 
   const handleCreate = useAuth(() => {
     navigation.navigate('Create Post');
   });
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      fetchProfile();
+    }
+  }, [isLoggedIn, fetchProfile]);
+
   return (
     <View style={styles.flex}>
       <View style={styles.homeHeaderContainer}>
         <View style={styles.postSection}>
           {isLoggedIn ? (
-            <Avatar image={userAvatar} size="large" />
+            <Avatar image={profileData?.profile_path} size="large" />
           ) : (
             <Avatar size="large" />
           )}
