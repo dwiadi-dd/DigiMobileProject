@@ -1,5 +1,5 @@
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {memo, useState} from 'react';
+import React, {memo, useCallback, useState} from 'react';
 import SPACING from '@constant/spacing';
 import Avatar from '@components/atom/Avatar';
 import {Icon, Typography} from '@components/atom';
@@ -8,16 +8,19 @@ import {formatTimeAgo} from '@utils/helper';
 import {Label} from '@components/molecules';
 import {FeedItemProps} from '@utils/props';
 import {useFeedStore} from '@stores/feedStore';
+import useAuth from '@hooks/useAuth';
 
 export const PostItem = ({post}: {post: FeedItemProps}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const {onPressUpvote} = useFeedStore();
 
-  const handleUpvote = async () => {
-    if (!post.is_upvoted) {
-      await onPressUpvote(post.id);
-    }
-  };
+  const handleUpvote = useAuth(
+    useCallback(async () => {
+      if (!post.is_upvoted) {
+        await onPressUpvote(post.id);
+      }
+    }, [post.is_upvoted, post.id, onPressUpvote]),
+  );
   const toggleReadMore = () => {
     setIsExpanded(!isExpanded);
   };

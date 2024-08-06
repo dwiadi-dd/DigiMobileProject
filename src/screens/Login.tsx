@@ -18,6 +18,7 @@ import storageServices from '@services/storageServices';
 import * as Keychain from 'react-native-keychain';
 import database from '@react-native-firebase/database';
 import analytics from '@react-native-firebase/analytics';
+import encryptionService from '@services/encryptionServices';
 const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const [email, setEmail] = useState('');
 
@@ -77,7 +78,9 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
 
   const saveCredentialsToSecureStorage = useCallback(async () => {
     try {
-      await Keychain.setGenericPassword(email, password, {
+      const encryptedEmail = await encryptionService.encrypt(email);
+      const encryptedPassword = await encryptionService.encrypt(password);
+      await Keychain.setGenericPassword(encryptedEmail, encryptedPassword, {
         accessControl: Keychain.ACCESS_CONTROL.BIOMETRY_ANY,
       });
       setIsFingerPrint(true);
@@ -90,8 +93,14 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
     try {
       const credentials = await Keychain.getGenericPassword();
       if (credentials) {
-        setEmail(credentials.username);
-        setPassword(credentials.password);
+        const decryptedEmail = await encryptionService.decrypt(
+          credentials.username,
+        );
+        const decryptedPassword = await encryptionService.decrypt(
+          credentials.password,
+        );
+        setEmail(decryptedEmail);
+        setPassword(decryptedPassword);
       }
     } catch (error) {
       console.error('Error getting credentials from secure storage:', error);
@@ -121,8 +130,10 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const handleLewati = () => {
     navigation.navigate('HomeTab');
   };
-  const handleDaftar = async () => {
-    await analytics().logEvent('click_register_button');
+  const handleDaftar = () => {
+    analytics()
+      .logEvent('click_register_button', {})
+      .catch(error => console.error('Error logging event:', error));
     navigation.navigate('Register');
   };
   const handleEmailChange = (text: string) => {

@@ -72,3 +72,6 @@ yarn-error.log
 !.yarn/releases
 !.yarn/sdks
 !.yarn/versions
+
+/backend/digi-mobile-project-firebase-adminsdk-5fxx4-c20048b4e5.json
+/android/app/google-services.json

@@ -82,7 +82,7 @@ const postRequestFormData = async <T>(
 
   const formData = new FormData();
   Object.keys(data).forEach(key => {
-    formData.append(key, data[key]);
+    formData.append(key, (data as Record<string, any>)[key]);
   });
 
   const response: AxiosResponse<T> = await api.post(url, formData, config);

@@ -21,8 +21,6 @@ const Profile: FC = () => {
   }
 
   const handleNotification = async () => {
-    // await notifee.requestPermission();
-
     const channelId = await notifee.createChannel({
       id: 'default-DIG',
       name: 'Default Channel DIGI',

@@ -18,7 +18,7 @@ const InitNotification = () => {
     switch (type) {
       case EventType.PRESS:
         if (detail.notification?.data.type === 'OPEN_POST_DETAIL') {
-          navigate('Post', {id: detail.notification?.data.postId});
+          navigate('Post', {id: detail?.notification?.data.postId});
         }
         break;
     }

@@ -220,7 +220,6 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const fetcMasterTopics = useCallback(async () => {
     setTopics({data: [], loading: true});
     const res = await investlyServices.fetchTopics();
-    console.log(res);
     if (res?.status === 200) {
       setTopics({data: res?.data?.data, loading: false});
     } else {
@@ -237,7 +236,7 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
           updateInputState('email', true, '', 'positive');
         } else {
           await analytics().logEvent('failed_validate_register_email', {
-            email,
+            email: email,
           });
           updateInputState('email', false, 'email sudah digunakan', 'negative');
         }

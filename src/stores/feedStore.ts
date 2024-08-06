@@ -62,30 +62,6 @@ export const useFeedStore = create<FeedState>()((set, get) => ({
         [sortBy]: [...(state.feedData[sortBy] || []), ...feeds],
       },
     })),
-  // onPressUpvote: async (postId: string) => {
-  //   try {
-  //     const res = await investlyServices.upvotePost({post_id: postId});
-  //     console.log(res);
-  //     if (res?.status === 200) {
-  //       const updatedFeeds = get().feedData.engagement?.map(feed =>
-  //         feed.id === postId
-  //           ? {...feed, total_upvotes: feed.upvotes + 1}
-  //           : feed,
-  //       );
-  //       set({feedData: {engagement: updatedFeeds}});
-  //     } else {
-  //       ToastAndroid.show(
-  //         res?.data?.messages || 'an error ocurred',
-  //         ToastAndroid.SHORT,
-  //       );
-  //       set({error: res?.data?.messages || 'An error occurred'});
-  //     }
-  //   } catch (error) {
-  //     set({error: 'An error occurred while upvoting post'});
-  //   } finally {
-  //     set({loading: false});
-  //   }
-  // },
   onPressUpvote: async (postId: string) => {
     try {
       const res = await investlyServices.upvotePost({post_id: postId});
