@@ -13,21 +13,19 @@ import {Button} from '@components/molecules';
 import {Icon, Typography} from '@components/atom';
 import {useNavigation} from '@react-navigation/native';
 import {getTypography} from '@components/atom/Typhography';
-import {TopicsMasterPropsRes} from '@utils/props';
 import investlyServices from '@services/investlyServices';
 import {Picker} from '@react-native-picker/picker';
 import SPACING from '@constant/spacing';
 import FONT_SIZE from '@constant/fontSize';
 import analytics from '@react-native-firebase/analytics';
 import {useProfileStore} from '@stores/userStore';
+import {TopicsState} from '@utils/props';
 
 const CreatePost: FC = () => {
   const {profileData} = useProfileStore();
 
   const navigation = useNavigation();
-  const [topics, setTopics] = useState<
-    TopicsMasterPropsRes | [] | {loading: boolean}
-  >({
+  const [topics, setTopics] = useState<TopicsState>({
     data: [],
     loading: false,
   });
@@ -46,7 +44,7 @@ const CreatePost: FC = () => {
     setTopics({data: [], loading: true});
     const res = await investlyServices.fetchTopics();
     if (res?.status === 200) {
-      setTopics({data: res?.data?.data, loading: false});
+      setTopics({data: res?.data?.data ?? [], loading: false});
     } else {
       setTopics({data: [], loading: false});
       Alert.alert('Login failed', res?.data?.messages || 'An error occurred');
@@ -75,7 +73,7 @@ const CreatePost: FC = () => {
         res?.data?.messages || 'An error occurred',
       );
     }
-  }, []);
+  }, [formData, navigation, profileData]);
 
   useEffect(() => {
     fetcMasterTopics();
@@ -112,7 +110,7 @@ const CreatePost: FC = () => {
         </Button>
       </View>
       <View style={styles.contentHolder}>
-        {topics?.loading ? (
+        {'loading' in topics && topics.loading ? (
           <Typography type="paragraph" size="medium">
             Loading topics...
           </Typography>

@@ -157,6 +157,11 @@ export interface TopicMaster {
   label: string;
 }
 
+export interface TopicsState {
+  data: TopicMaster[];
+  loading: boolean;
+}
+
 export interface AttachmentProperty {
   name_display: string;
   full_path: string;

@@ -15,7 +15,7 @@ import SPACING from '@constant/spacing';
 import COLORS from '@constant/colors';
 import StepperIndicator from './components/StepIndicator';
 import investlyServices from '@services/investlyServices';
-import {TopicMaster, TopicsMasterPropsRes} from '@utils/props';
+import {TopicMaster, TopicsState} from '@utils/props';
 import {debounce, onDisplayNotification} from '@utils/helper';
 import storageServices from '@services/storageServices';
 import analytics from '@react-native-firebase/analytics';
@@ -42,9 +42,7 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   const [isValid, setIsValid] = useState(false);
   const [currentStep, setCurrentStep] = useState(1);
   const [loading, setLoading] = useState<boolean>(false);
-  const [topics, setTopics] = useState<
-    TopicsMasterPropsRes | [] | {loading: boolean}
-  >({
+  const [topics, setTopics] = useState<TopicsState>({
     data: [],
     loading: false,
   });
@@ -221,7 +219,7 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
     setTopics({data: [], loading: true});
     const res = await investlyServices.fetchTopics();
     if (res?.status === 200) {
-      setTopics({data: res?.data?.data, loading: false});
+      setTopics({data: res?.data?.data ?? [], loading: false});
     } else {
       setTopics({data: [], loading: false});
       Alert.alert('Login failed', res?.data?.messages || 'An error occurred');
@@ -351,7 +349,7 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
         });
         navigation.navigate('HomeTab');
         setLoading(false);
-        storageServices.setLoginData(res?.data?.data);
+        storageServices.setLoginData(res?.data?.data as any);
         navigation.dispatch(
           CommonActions.reset({
             index: 0,
@@ -402,7 +400,7 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
 
   useEffect(() => {
     fetcMasterTopics();
-  }, []);
+  }, [fetcMasterTopics]);
 
   const renderTopicItem = ({item}: {item: TopicMaster}) => (
     <TouchableOpacity

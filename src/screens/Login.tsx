@@ -167,7 +167,6 @@ const Login: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
       .ref('/is_enabled_fingerprint_feature')
       .once('value')
       .then(snapshot => {
-        console.log('is enabled finger ', snapshot);
         setIsFingerprintFF(snapshot.val());
       });
   }, []);
