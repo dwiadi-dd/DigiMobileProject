@@ -104,6 +104,12 @@ export const fetchProfile = async (
   return await getRequest(apiDev, '/social/v2/profile', data, true);
 };
 
+export const logout = async (
+  data?: undefined,
+): Promise<ApiResponse<ProfileRes | undefined>> => {
+  return await postRequest(apiDev, '/auth/v2/logout', data, true);
+};
+
 export default {
   createPost,
   checkEmail,
@@ -115,4 +121,5 @@ export default {
   fetchFeedDev,
   upvotePost,
   fetchProfile,
+  logout,
 };

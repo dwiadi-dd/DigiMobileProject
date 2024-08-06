@@ -1,9 +1,9 @@
-import {Image, SafeAreaView, StyleSheet, View} from 'react-native';
-import React, {FC, memo} from 'react';
+import {Alert, Image, SafeAreaView, StyleSheet, View} from 'react-native';
+import React, {FC, memo, useCallback} from 'react';
 import COLORS from '@constant/colors';
 import SPACING from '@constant/spacing';
 import {Button} from '@components/molecules';
-import {storageServices} from '@services/index';
+import {investlyServices, storageServices} from '@services/index';
 import {CommonActions, useNavigation} from '@react-navigation/native';
 import notifee, {
   AndroidImportance,
@@ -11,7 +11,12 @@ import notifee, {
   TriggerType,
 } from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
+import analytics from '@react-native-firebase/analytics';
+import {useProfileStore} from '@stores/userStore';
+import {Typography} from '@components/atom';
+
 const Profile: FC = () => {
+  const {profileData} = useProfileStore();
   const navigation = useNavigation();
 
   async function onAppBootstrap() {
@@ -44,6 +49,27 @@ const Profile: FC = () => {
     });
   };
 
+  const onLogout = useCallback(async () => {
+    const res = await investlyServices.logout();
+    if (res?.status === 200 && res.data?.data) {
+      analytics().logEvent('click_logout', {
+        username: profileData?.username,
+      });
+      storageServices.clearLoginData();
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'OnBoarding', params: {isLogin: false}}],
+        }),
+      );
+    } else {
+      Alert.alert(
+        'Something went wrong',
+        res?.data?.messages || 'An error occurred',
+      );
+    }
+  }, [navigation, profileData]);
+
   const onCreateTriggerNotification = async () => {
     const date = new Date(Date.now());
     date.setSeconds(date.getSeconds() + 10);
@@ -75,6 +101,9 @@ const Profile: FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.itemContainer}>
+        <Typography type="heading" size="medium">
+          {profileData?.username}
+        </Typography>
         <Image
           source={require('../../assets/img/invest.png')}
           style={styles.image}
@@ -105,15 +134,7 @@ const Profile: FC = () => {
             size="medium"
             variant="primary"
             type="text-only"
-            onPress={() => {
-              storageServices.clearLoginData();
-              navigation.dispatch(
-                CommonActions.reset({
-                  index: 0,
-                  routes: [{name: 'OnBoarding', params: {isLogin: false}}],
-                }),
-              );
-            }}>
+            onPress={onLogout}>
             Logout
           </Button>
         </View>
