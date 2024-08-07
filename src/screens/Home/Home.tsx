@@ -79,12 +79,23 @@ const Home = () => {
       </View>
       <TopTab.Navigator
         screenOptions={{
-          tabBarStyle: {backgroundColor: 'white'},
+          tabBarStyle: {
+            backgroundColor: 'white',
+            shadowColor: 'transparent', // Remove shadow
+          },
           tabBarIndicatorStyle: {
             backgroundColor: COLORS.purple600,
-            height: 2,
+            height: 3,
           },
-          tabBarLabelStyle: {fontSize: 14, fontWeight: 'bold'},
+          tabBarLabelStyle: {
+            fontSize: 16,
+            fontWeight: 'bold',
+            textTransform: 'none', // Prevent automatic uppercase
+          },
+          tabBarIndicatorContainerStyle: {
+            paddingHorizontal: 40,
+            marginLeft: 20,
+          },
           tabBarActiveTintColor: COLORS.purple600,
           tabBarInactiveTintColor: COLORS.neutral700,
         }}>

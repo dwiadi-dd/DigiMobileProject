@@ -1,8 +1,8 @@
-import {Alert, Image, SafeAreaView, StyleSheet, View} from 'react-native';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
 import React, {FC, memo, useCallback} from 'react';
 import COLORS from '@constant/colors';
 import SPACING from '@constant/spacing';
-import {Button} from '@components/molecules';
+import {Button, UserCard} from '@components/molecules';
 import {investlyServices, storageServices} from '@services/index';
 import {CommonActions, useNavigation} from '@react-navigation/native';
 import notifee, {
@@ -13,7 +13,6 @@ import notifee, {
 import messaging from '@react-native-firebase/messaging';
 import analytics from '@react-native-firebase/analytics';
 import {useProfileStore} from '@stores/userStore';
-import {Typography} from '@components/atom';
 
 const Profile: FC = () => {
   const {profileData} = useProfileStore();
@@ -63,9 +62,12 @@ const Profile: FC = () => {
         }),
       );
     } else {
-      Alert.alert(
-        'Something went wrong',
-        res?.data?.messages || 'An error occurred',
+      storageServices.clearLoginData();
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0,
+          routes: [{name: 'OnBoarding', params: {isLogin: false}}],
+        }),
       );
     }
   }, [navigation, profileData]);
@@ -100,36 +102,14 @@ const Profile: FC = () => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.itemContainer}>
-        <Typography type="heading" size="medium">
-          {profileData?.username}
-        </Typography>
-        <Image
-          source={require('../../assets/img/invest.png')}
-          style={styles.image}
+      <View style={styles.simpleCard}>
+        <UserCard
+          profileImage={profileData?.profile_path || ''}
+          username={profileData?.username || 'Username'}
+          name={profileData?.name || 'Name'}
+          email={profileData?.email || 'Email'}
         />
-        <View style={styles.profileContainer}>
-          <Button
-            size="medium"
-            variant="primary"
-            type="text-only"
-            onPress={onAppBootstrap}>
-            fcm
-          </Button>
-          <Button
-            size="medium"
-            variant="primary"
-            type="text-only"
-            onPress={handleNotification}>
-            local
-          </Button>
-          <Button
-            size="medium"
-            variant="primary"
-            type="text-only"
-            onPress={onCreateTriggerNotification}>
-            delay
-          </Button>
+        <View style={styles.itemContainer}>
           <Button
             size="medium"
             variant="primary"
@@ -139,12 +119,45 @@ const Profile: FC = () => {
           </Button>
         </View>
       </View>
+      <View style={styles.itemContainer}>
+        <View style={styles.profileContainer}>
+          <Button
+            size="medium"
+            variant="primary"
+            type="text-only"
+            onPress={onAppBootstrap}>
+            Notification FCM
+          </Button>
+          <Button
+            size="medium"
+            variant="primary"
+            type="text-only"
+            onPress={handleNotification}>
+            Notification Local
+          </Button>
+          <Button
+            size="medium"
+            variant="primary"
+            type="text-only"
+            onPress={onCreateTriggerNotification}>
+            Notification Delay
+          </Button>
+        </View>
+      </View>
     </SafeAreaView>
   );
 };
 export default memo(Profile);
 
 const styles = StyleSheet.create({
+  simpleCard: {
+    backgroundColor: COLORS.neutral100,
+    borderRadius: 16,
+    borderColor: COLORS.neutral300,
+    borderWidth: 1,
+    justifyContent: 'space-between',
+    marginBottom: 10,
+  },
   container: {
     flex: 1,
     paddingHorizontal: SPACING.xl,
@@ -154,6 +167,7 @@ const styles = StyleSheet.create({
   },
   flex: {flex: 1},
   itemContainer: {
+    padding: SPACING.lg,
     justifyContent: 'center',
     alignItems: 'center',
   },
