@@ -547,13 +547,15 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
           <Image source={require('../../../assets/img/ic_investly.png')} />
         </View>
         <View style={styles.headerSide}>
-          <Button
-            type="text-only"
-            variant="link"
-            size="medium"
-            onPress={handleNext}>
-            Masuk
-          </Button>
+          {currentStep === 1 && (
+            <Button
+              type="text-only"
+              variant="link"
+              size="medium"
+              onPress={handleBack}>
+              Masuk
+            </Button>
+          )}
         </View>
       </View>
       <View style={styles.container}>
