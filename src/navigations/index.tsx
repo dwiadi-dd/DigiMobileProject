@@ -61,6 +61,11 @@ export default function MainNavigation() {
       <InitNotification />
       <Stack.Navigator>
         <Stack.Screen
+          name="OnBoarding"
+          component={Onboarding}
+          options={{title: 'Welcome', headerShown: false}}
+        />
+        <Stack.Screen
           name="Login"
           component={Login}
           options={{headerShown: false}}
@@ -69,11 +74,6 @@ export default function MainNavigation() {
           name="Register"
           component={Register}
           options={{headerShown: false}}
-        />
-        <Stack.Screen
-          name="OnBoarding"
-          component={Onboarding}
-          options={{title: 'Welcome', headerShown: false}}
         />
         <Stack.Screen
           name="HomeTab"
