@@ -9,7 +9,7 @@ type AvatarProps = {
 export default function Avatar({size, image}: AvatarProps) {
   const styleSize = styles[size];
 
-  const defaultImage = require('../../../assets/img/avatar.png');
+  const defaultImage = require('../../../assets/img/avitir.png');
   const imageSource = image
     ? typeof image === 'string'
       ? {uri: image}

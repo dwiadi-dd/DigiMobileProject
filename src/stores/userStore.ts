@@ -3,6 +3,7 @@ import {ProfileRes} from '@utils/props';
 import {ApiResponse} from '@services/httprequester';
 import {fetchProfile} from '@services/investlyServices';
 import crashlytics from '@react-native-firebase/crashlytics';
+import storageServices from '@services/storageServices';
 interface ProfileState {
   profileData: ProfileRes['data'] | null;
   loading: boolean;
@@ -28,6 +29,9 @@ export const useProfileStore = create<ProfileState>()((set, get) => ({
           email: res.data.data.name,
           username: res.data.data.username,
         });
+      } else if (res?.status === 401) {
+        storageServices.clearLoginData();
+        set({error: res?.data?.messages || 'session expired'});
       } else {
         set({error: res?.data?.messages || 'An error occurred'});
       }

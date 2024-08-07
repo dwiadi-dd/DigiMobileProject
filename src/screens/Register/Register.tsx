@@ -19,6 +19,8 @@ import {TopicMaster, TopicsState} from '@utils/props';
 import {debounce, onDisplayNotification} from '@utils/helper';
 import storageServices from '@services/storageServices';
 import analytics from '@react-native-firebase/analytics';
+import {BackHandler} from 'react-native';
+import {useFocusEffect} from '@react-navigation/native';
 
 const STEP_TITLE = ['Buat Akun', 'Tambahkan Nama & Username', 'Pilih 3 Topik'];
 
@@ -59,13 +61,13 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
 
   const updateInputState = (
     field: string,
-    isValid: boolean,
+    isValidInput: boolean,
     errorMessage: string,
     states: string,
   ) => {
     setInputState(prev => ({
       ...prev,
-      [field]: {isValid, errorMessage, states},
+      [field]: {isValid: isValidInput, errorMessage, states},
     }));
   };
 
@@ -315,10 +317,28 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
+    navigation.goBack();
   };
+  useFocusEffect(
+    React.useCallback(() => {
+      const onBackPress = () => {
+        if (currentStep > 1) {
+          setCurrentStep(prevStep => prevStep - 1);
+          return true;
+        }
+        return false;
+      };
 
+      BackHandler.addEventListener('hardwareBackPress', onBackPress);
+
+      return () =>
+        BackHandler.removeEventListener('hardwareBackPress', onBackPress);
+    }, [currentStep]),
+  );
   const handleRegister = async () => {
-    if (currentStep !== 3) return;
+    if (currentStep !== 3) {
+      return;
+    }
     analytics().logEvent('click_register_button_step_3', {
       email: formData?.email,
       name: formData?.name,
@@ -541,7 +561,7 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
           {STEP_TITLE[currentStep - 1]}
         </Typography>
         <View style={styles.formContainer}>{renderStepContent()}</View>
-        <View style={{gap: 12, paddingBottom: 32}}>
+        <View style={styles.stepContainer}>
           <StepperIndicator currentStep={currentStep} totalSteps={3} />
           <Button
             type="text-only"
@@ -560,6 +580,7 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
 export default Register;
 
 const styles = StyleSheet.create({
+  stepContainer: {gap: 12, paddingBottom: 32},
   viewContainer: {backgroundColor: COLORS.neutral100, flex: 1},
   container: {
     flex: 1,

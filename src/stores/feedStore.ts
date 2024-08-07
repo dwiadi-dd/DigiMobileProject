@@ -23,7 +23,7 @@ export const useFeedStore = create<FeedState>()((set, get) => ({
     try {
       let res;
       if (sortBy === 'engagement') {
-        res = await investlyServices.fetchFeed({
+        res = await investlyServices.fetchFeedDev({
           sort: sortBy,
           page,
           size: 10,

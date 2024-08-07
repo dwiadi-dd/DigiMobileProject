@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import {LoginAlert, TextField} from '@components/molecules';
@@ -16,7 +16,9 @@ const TopTab = createMaterialTopTabNavigator();
 
 const Home = () => {
   const {profileData, fetchProfile} = useProfileStore();
-  const isLoggedIn = storageServices.getLoginData().isLoggedIn;
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    storageServices.getLoginData().isLoggedIn,
+  );
   const navigation = useNavigation<NavigationProp<any>>();
 
   const handleCreate = useAuth(() => {
@@ -24,9 +26,17 @@ const Home = () => {
   });
 
   useEffect(() => {
-    if (isLoggedIn) {
-      fetchProfile();
-    }
+    const validateToken = async () => {
+      if (isLoggedIn) {
+        await fetchProfile();
+        const currentLoginState = storageServices.getLoginData().isLoggedIn;
+        if (currentLoginState !== isLoggedIn) {
+          setIsLoggedIn(currentLoginState);
+        }
+      }
+    };
+
+    validateToken();
   }, [isLoggedIn, fetchProfile]);
 
   return (

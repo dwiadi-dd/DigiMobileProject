@@ -6,8 +6,6 @@
  */
 
 import React, {FC, useEffect} from 'react';
-import {AuthProvider} from '@contexts/AuthContext';
-import {PostsProvider} from '@contexts/PostContext';
 import MainNavigation from '@navigations/index';
 import messaging from '@react-native-firebase/messaging';
 import notifee from '@notifee/react-native';
@@ -30,16 +28,9 @@ const App: FC = () => {
     crashlytics().log('App mounted.');
 
     if (JailMonkey.isJailBroken()) {
-      // Alternative behaviour for jail-broken/rooted devices.
       Alert.alert('Warning', 'This device is jailbroken/rooted.');
     }
   }, []);
-  return (
-    <PostsProvider>
-      <AuthProvider>
-        <MainNavigation />
-      </AuthProvider>
-    </PostsProvider>
-  );
+  return <MainNavigation />;
 };
 export default App;

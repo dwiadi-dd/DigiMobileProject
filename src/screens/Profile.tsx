@@ -108,7 +108,7 @@ const Profile: FC = () => {
           source={require('../../assets/img/invest.png')}
           style={styles.image}
         />
-        <View style={{gap: 10}}>
+        <View style={styles.profileContainer}>
           <Button
             size="medium"
             variant="primary"
@@ -162,4 +162,5 @@ const styles = StyleSheet.create({
     height: 240,
     resizeMode: 'contain',
   },
+  profileContainer: {gap: 10},
 });
