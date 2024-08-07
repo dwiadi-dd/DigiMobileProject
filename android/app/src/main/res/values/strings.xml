@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Adi Investly</string>
+    <string moduleConfig="true" name="CodePushDeploymentKey">t3Vdwf8rL9HNa_NJvlx02o9vDRH2SzS7l-PJ8</string>
 </resources>

@@ -74,4 +74,4 @@ jobs:
         env:
           APPCENTER_ACCESS_TOKEN: ${{ secrets.APPCENTER_ACCESS_TOKEN }}
         run: |
-          appcenter codepush release-react -a <ownerName>/<appName> -d Production -t $(jq -r '.version' package.json)
+          appcenter codepush release-react -a dwiadi-dd/digimobile -d Production -t $(jq -r '.version' package.json)
