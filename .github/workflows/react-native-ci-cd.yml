@@ -28,18 +28,14 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./android/gradlew
 
-      - name: Build Android Staging Release
-        env:
-          ENVFILE: .env.staging
-        run: |
-          cd android
-          ./gradlew clean
-          ./gradlew app:assembleStagingRelease
+      - name: build release
+        run: ./gradlew assembleDebug
+        working-directory: android
 
-      - name: Upload artifact to Firebase App Distribution
-        uses: wzieba/Firebase-Distribution-Github-Action@v1
+      - name: upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1.5.1
         with:
-          appId: ${{secrets.FIREBASE_APP_ID}}
+          appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
-          groups: qa
-          file: android/app/build/outputs/apk/staging/release/app-staging-release.apk
+          groups: testers
+          file: android/app/build/outputs/apk/debug/app-debug.apk
