@@ -28,14 +28,23 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./android/gradlew
 
-      - name: build release
+      - name: Update version code and name
+        run: |
+          sed -i 's/versionCode [0-9]*/versionCode ${{ github.run_number }}/g' ./android/app/build.gradle
+          sed -i 's/versionName "[0-9.]*"/versionName "1.0.${{ format('{0:03d}', github.run_number) }}"/g' ./android/app/build.gradle
+
+      - name: Build debug APK
         run: ./gradlew assembleDebug
         working-directory: android
 
-      - name: upload artifact to Firebase App Distribution
+      - name: Rename APK
+        run: mv android/app/build/outputs/apk/debug/app-debug.apk android/app/build/outputs/apk/debug/app-1.0.${{ format('{0:03d}', github.run_number) }}.apk
+
+      - name: Upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.5.1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: testers
-          file: android/app/build/outputs/apk/debug/app-debug.apk
+          file: android/app/build/outputs/apk/debug/app-1.0.${{ format('{0:03d}', github.run_number) }}.apk
+          releaseNotes: "Version 1.0.${{ format('{0:03d}', github.run_number) }}"
