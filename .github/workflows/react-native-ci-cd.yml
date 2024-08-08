@@ -28,17 +28,25 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./android/gradlew
 
+      - name: Generate version name
+        id: version
+        run: |
+          version_code=${{ github.run_number }}
+          version_name="1.0.$(printf "%03d" $version_code)"
+          echo "version_code=$version_code" >> $GITHUB_OUTPUT
+          echo "version_name=$version_name" >> $GITHUB_OUTPUT
+
       - name: Update version code and name
         run: |
-          sed -i 's/versionCode [0-9]*/versionCode ${{ github.run_number }}/g' ./android/app/build.gradle
-          sed -i 's/versionName "[0-9.]*"/versionName "1.0.${{ format('{0:03d}', github.run_number) }}"/g' ./android/app/build.gradle
+          sed -i 's/versionCode [0-9]*/versionCode ${{ steps.version.outputs.version_code }}/g' ./android/app/build.gradle
+          sed -i 's/versionName "[0-9.]*"/versionName "${{ steps.version.outputs.version_name }}"/g' ./android/app/build.gradle
 
       - name: Build debug APK
         run: ./gradlew assembleDebug
         working-directory: android
 
       - name: Rename APK
-        run: mv android/app/build/outputs/apk/debug/app-debug.apk android/app/build/outputs/apk/debug/app-1.0.${{ format('{0:03d}', github.run_number) }}.apk
+        run: mv android/app/build/outputs/apk/debug/app-debug.apk android/app/build/outputs/apk/debug/app-${{ steps.version.outputs.version_name }}.apk
 
       - name: Upload artifact to Firebase App Distribution
         uses: wzieba/Firebase-Distribution-Github-Action@v1.5.1
@@ -46,5 +54,5 @@ jobs:
           appId: ${{ secrets.FIREBASE_APP_ID }}
           serviceCredentialsFileContent: ${{ secrets.CREDENTIAL_FILE_CONTENT }}
           groups: testers
-          file: android/app/build/outputs/apk/debug/app-1.0.${{ format('{0:03d}', github.run_number) }}.apk
-          releaseNotes: "Version 1.0.${{ format('{0:03d}', github.run_number) }}"
+          file: android/app/build/outputs/apk/debug/app-${{ steps.version.outputs.version_name }}.apk
+          releaseNotes: 'Version ${{ steps.version.outputs.version_name }}'
