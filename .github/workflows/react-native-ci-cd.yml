@@ -27,6 +27,9 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
 
+      - name: Make Gradle wrapper executable
+        run: chmod +x android/gradlew
+
       - name: Build Android Release APK
         run: |
           cd android
