@@ -296,28 +296,32 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
   }, []);
 
   const handleNext = () => {
-    if (currentStep === 1) {
-      analytics().logEvent('click_register_button_step_1', {
-        email: formData?.email,
-      });
-    }
-    if (currentStep === 2) {
-      analytics().logEvent('click_register_button_step_2', {
-        email: formData?.email,
-        name: formData?.name,
-        username: formData?.username,
-      });
-    }
-    if (currentStep < 3) {
-      setCurrentStep(currentStep + 1);
-    }
+    setCurrentStep(currentStep + 1);
+
+    // if (currentStep === 1) {
+    //   analytics().logEvent('click_register_button_step_1', {
+    //     email: formData?.email,
+    //   });
+    // }
+    // if (currentStep === 2) {
+    //   analytics().logEvent('click_register_button_step_2', {
+    //     email: formData?.email,
+    //     name: formData?.name,
+    //     username: formData?.username,
+    //   });
+    // }
+    // if (currentStep < 3) {
+    //   setCurrentStep(currentStep + 1);
+    // }
   };
 
   const handleBack = () => {
-    if (currentStep > 1) {
-      setCurrentStep(currentStep - 1);
-    }
-    navigation.goBack();
+    setCurrentStep(currentStep - 1);
+
+    // if (currentStep > 1) {
+    //   setCurrentStep(currentStep - 1);
+    // }
+    // navigation.goBack();
   };
   useFocusEffect(
     React.useCallback(() => {
@@ -569,7 +573,7 @@ const Register: FC<{navigation: NavigationProp<any>}> = ({navigation}) => {
             type="text-only"
             variant="primary"
             size="medium"
-            disabled={!isValid || loading}
+            // disabled={!  isValid || loading}
             onPress={currentStep < 3 ? handleNext : handleRegister}>
             {currentStep === 3 ? 'Daftar' : 'Selanjutnya'}
           </Button>

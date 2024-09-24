@@ -18,7 +18,7 @@ async function sendMessage() {
     topic: 'DIGICAMP',
     data: {
       notifee: JSON.stringify({
-        title: 'Notif from TOPIC',
+        title: 'Hallo dari investly',
         subtitle: 'TEST',
         body: 'pesan masuk dari TOPIC',
         android: {
@@ -26,10 +26,6 @@ async function sendMessage() {
           pressAction: {
             id: 'default',
           },
-        },
-        data: {
-          type: 'OPEN_POST_DETAIL',
-          postId: '7e55ef5f-05df-4428-be77-e68b36f6b63e',
         },
       }),
     },

@@ -13,6 +13,7 @@ import CreatePost from '@screens/CreatePost';
 import {HomeTab} from '@screens/Home/components/HomeTab';
 import Register from '@screens/Register/Register';
 import notifee, {EventType, Event} from '@notifee/react-native';
+import PlayGround from '@screens/PlayGround';
 
 const Stack = createNativeStackNavigator();
 type RootStackParamList = {
@@ -60,6 +61,11 @@ export default function MainNavigation() {
     <NavigationContainer>
       <InitNotification />
       <Stack.Navigator>
+        <Stack.Screen
+          name="PlayGround"
+          component={PlayGround}
+          options={{title: 'PlayGround', headerShown: false}}
+        />
         <Stack.Screen
           name="OnBoarding"
           component={Onboarding}
