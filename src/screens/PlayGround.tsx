@@ -1,5 +1,5 @@
 import {Typography} from '@components/atom';
-import {Button} from '@components/molecules';
+import {Button, SkeletonPostItem} from '@components/molecules';
 import COLORS from '@constant/colors';
 import React, {useEffect, useRef, useState} from 'react';
 import {
@@ -32,7 +32,7 @@ const PlayGround: React.FC = () => {
   console.log(progressBarWidthInterpolate);
   return (
     <View style={styles.container}>
-      <Typography size="large" type="heading" style={styles.centerText}>
+      {/* <Typography size="large" type="heading" style={styles.centerText}>
         {`${currentStep} of ${totalSteps}`}
       </Typography>
       <View style={styles.progressBarContainer}>
@@ -58,7 +58,8 @@ const PlayGround: React.FC = () => {
           onPress={() => setCurrentStep(Math.min(totalSteps, currentStep + 1))}>
           {`  maju  `}
         </Button>
-      </View>
+      </View> */}
+      <SkeletonPostItem />
     </View>
   );
 };

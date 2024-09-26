@@ -1,75 +1,76 @@
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import React, {FC} from 'react';
+import {
+  StyleSheet,
+  TouchableOpacity,
+  View,
+  Animated,
+  Easing,
+} from 'react-native';
+import React, {FC, useEffect, useRef} from 'react';
 import SPACING from '@constant/spacing';
 import {Icon} from '@components/atom';
 import COLORS from '@constant/colors';
 
+// @ts-nocheck
 export const SkeletonPostItem: FC = () => {
+  const pulseAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const pulse = Animated.loop(
+      Animated.sequence([
+        Animated.timing(pulseAnim, {
+          toValue: 1,
+          duration: 1000,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+        Animated.timing(pulseAnim, {
+          toValue: 0,
+          duration: 1000,
+          easing: Easing.ease,
+          useNativeDriver: true,
+        }),
+      ]),
+    );
+
+    pulse.start();
+
+    return () => pulse.stop();
+  }, [pulseAnim]);
+
+  const opacityStyle = {
+    opacity: pulseAnim.interpolate({
+      inputRange: [0, 1],
+      outputRange: [0.4, 1],
+    }),
+  };
+
+  const SkeletonView = ({style}: any) => (
+    <Animated.View style={[style, opacityStyle]} />
+  );
+
   return (
     <View style={styles.postContainer}>
       <View style={styles.headContainer}>
-        <View style={[styles.imageSize, styles.skeletonAvatar]} />
+        <SkeletonView style={[styles.imageSize, styles.skeletonAvatar]} />
         <View>
           <View style={styles.header}>
-            <View style={[styles.skeletonTextFull]} />
-            <Icon name="ellipsis" width={14} height={14} />
+            <SkeletonView style={[styles.skeletonTextFull]} />
           </View>
-          <View style={styles.skeletonText} />
-          <View style={styles.skeletonText} />
+          <SkeletonView style={styles.skeletonText} />
+          <SkeletonView style={styles.skeletonText} />
         </View>
       </View>
 
       <View style={styles.contentContainer}>
         <TouchableOpacity>
-          <View style={styles.skeletonText} />
+          <SkeletonView style={styles.skeletonText} />
         </TouchableOpacity>
         <TouchableOpacity>
-          <View style={styles.skeletonText} />
+          <SkeletonView style={styles.skeletonText} />
         </TouchableOpacity>
       </View>
 
-      <View style={styles.skeletonLabel} />
-
-      <View style={styles.footer}>
-        <View style={styles.voteContainer}>
-          <TouchableOpacity style={styles.voteButton}>
-            <Icon
-              width={16}
-              height={16}
-              name="arrow-down"
-              fill={COLORS.neutral700}
-            />
-            <View style={styles.skeletonText} />
-          </TouchableOpacity>
-          <View style={styles.divider} />
-          <TouchableOpacity style={styles.voteButton}>
-            <Icon
-              width={16}
-              height={16}
-              name="arrow-up"
-              fill={COLORS.neutral700}
-            />
-          </TouchableOpacity>
-        </View>
-        <TouchableOpacity style={styles.footerButton}>
-          <Icon
-            width={16}
-            height={16}
-            name="comment"
-            fill={COLORS.neutral700}
-          />
-          <View style={styles.skeletonText} />
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.footerButton}>
-          <Icon
-            width={16}
-            height={16}
-            name="retweet"
-            fill={COLORS.neutral700}
-          />
-          <View style={styles.skeletonText} />
-        </TouchableOpacity>
-      </View>
+      <SkeletonView style={styles.skeletonLabel} />
     </View>
   );
 };
@@ -82,8 +83,9 @@ const styles = StyleSheet.create({
     padding: 10,
     paddingVertical: 24,
     paddingHorizontal: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
+    borderWidth: 1,
+    borderColor: '#eee',
+    marginHorizontal: 40,
   },
   headContainer: {flexDirection: 'row', alignItems: 'center', gap: 12},
   flex: {flex: 1},
@@ -148,12 +150,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#ddd',
     height: 16,
     marginBottom: 8,
+    borderRadius: 4,
   },
   skeletonTextFull: {
     backgroundColor: '#ddd',
     height: 16,
     marginBottom: 8,
     width: 100,
+    borderRadius: 4,
   },
   skeletonLabel: {
     backgroundColor: '#ddd',
